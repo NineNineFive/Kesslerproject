@@ -19,7 +19,7 @@ M = 5.98e24; % Mass
 
 for i=1:1:size(p,2)
     inverted = randi([0,1],1,1);
-    h = randi([250000,2000000],1,1);
+    h = randi([250000,2000000],1,1); %højde i meter
     id(i) = i;
     vi(i) = deg2rad(randi([1 360],1,1));
     x(i) = 0;
