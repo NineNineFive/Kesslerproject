@@ -2,7 +2,7 @@
 clear 
 
 % Simulation settings (leap-frog)
-t_end = 500; % Simulation seconds
+t_end = 600; % Simulation seconds
 partikel_antal = 50; % Particle quantity
 
 % Particles Data
@@ -15,10 +15,6 @@ n = ceil(t_end/dt); % Number of steps simulation has to run
 r = 6.378e6; % Orbits radius from earth
 G = 6.67e-11; % Graviation constant
 M = 5.98e24; % Mass
-
-
-
-
 
 
 for i=1:1:size(p,2)
