@@ -1,0 +1,149 @@
+% Reset past variables
+clear 
+
+P = [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50];
+disp(size(P,2));
+for i=1:1:(size(P,2))
+    for j=i:1:(size(P,2))
+       distancen(i,j) = P(i)-P(j);
+    end
+end
+
+% Simulation settings (leap-frog)
+t_end = 600; % Simulation seconds
+partikel_antal = 50; % Particle quantity
+
+% Particles Data
+p = zeros(10,partikel_antal); % 10 variabler i partiklen, x antal partikler
+
+
+dt = 10; % Time-step
+n = ceil(t_end/dt); % Number of steps simulation has to run
+
+r = 6.378e6; % Orbits radius from earth
+G = 6.67e-11; % Graviation constant
+M = 5.98e24; % Mass
+
+
+for i=1:1:size(p,2)
+    inverted = randi([0,1],1,1);
+    h = randi([250000,2000000],1,1); %højde i meter
+    id(i) = i;
+    vi(i) = deg2rad(randi([1 360],1,1));
+    x(i) = 0;
+    y(i) = 0;
+    tid(i) = i;
+    x_0(i) = (r+h)*cos(vi(i));
+    y_0(i) = (r+h)*sin(vi(i));
+    rh(i) = r+h;
+    if(inverted==1)
+        v_0(i) = sqrt(G*M/(r+h));
+    else
+        v_0(i) = -sqrt(G*M/(r+h));
+    end    
+    GM(i) = G*M;
+end
+
+%| 1:id | 2:x | 3:y | 4:GM | 5:x_0 |6:y_0 | 7:vi | 8:rh | 9:v_0 | 10:tid |
+values = [id;x;y;GM;x_0;y_0;vi;rh;v_0;tid;];
+p = values;
+
+
+
+% LeapFrog Orbit Function
+%[ttable, xtable, ytable,p] = LeapFrogOrbit(n,p,t_end,dt);
+
+
+
+%function [ttable,xtable,ytable,p] = LeapFrogOrbit(n,p,t_end,dt);
+
+% Initalize empty tables
+%[ttable,xtable,ytable] = deal(zeros(size(p,2),n));
+
+for i=1:1:size(p,2)
+    
+     % Start the simulation at the initial contitions.
+     t = 0;
+     GM = p(4,i);
+     x = deal(p(5,i));
+     y = deal(p(6,i));
+     x_0 = p(5,i);
+     y_0 = p(6,i);
+     
+     
+     v_0 = p(9,i);
+     vinkel = p(7,i);
+    
+     v_x0 = -v_0*sin(vinkel);
+     v_y0 = v_0*cos(vinkel);
+     
+     v_x = v_x0;
+     v_y = v_y0;
+
+     for n=1:1:n
+         % The LeapFrog method
+         t = t + dt;   % Update the time
+         
+         % Calculate acceleration on a mass attached to spring
+         a_x = -GM*(x/((x_0.^2+y_0.^2)^1.5));      
+         a_y = -GM*(y/((x_0.^2+y_0.^2)^1.5));  
+         
+         
+         
+         % Update the velocity
+         v_x = v_x + a_x*dt; 
+         v_y = v_y + a_y*dt;
+     
+         %disp = p(i,2:3)-p(i,2:3);
+         %dist2 = sun(disp.^2);
+         for j=i:1:size(p,2)
+            displacement = p(2:3,i)-p(2:3,j);
+            distancen(i,j) = sum(displacement.^2);
+         end
+         % Update the position
+         x = x + v_x*dt;
+         y = y + v_y*dt;
+
+         % t, v, and x are stored for later use, e.g., plot(ttable,xtable)
+         ttable(i, n) = t;
+         xtable(i, n) = x;
+         ytable(i, n) = y;
+         
+         p(2,i) = x;
+         p(3,i) = y;
+         p(10,i) = t;
+     end
+
+end
+
+
+
+
+
+
+
+% plotting
+figure(1);
+plot(ttable(i,:),xtable(i,:));
+hold on
+plot(ttable(i,:),ytable(i,:));
+
+figure(2);
+axis equal;
+grid on;
+hold on;
+xlabel('X position');
+ylabel('Y position');
+earth = viscircles([0 0],r,'Color',[0 0.4 0]); % The earth
+%earth.LineWidth = 1;
+%earth.Color = 'black';
+for i = 1:1:size(p,2)
+    plot(p(2,:), p(3,:), "."); % particles current position
+    plot(xtable(i,:),ytable(i,:)); % Particles travel in orbit
+end
+
+
+
+
+% Clear variables from workspace
+clearvars id dt G v h G M GM tid pv x_0 y_0 v_0 r rh t x y values inverted vi i n; 

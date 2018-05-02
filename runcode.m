@@ -1,9 +1,10 @@
 % Reset past variables
 clear 
 
+
 % Simulation settings (leap-frog)
-t_end = 600; % Simulation seconds
-partikel_antal = 50; % Particle quantity
+t_end = 30000; % Simulation seconds
+partikel_antal = 20; % Particle quantity
 
 % Particles Data
 p = zeros(10,partikel_antal); % 10 variabler i partiklen, x antal partikler
@@ -43,7 +44,9 @@ p = values;
 
 
 % LeapFrog Orbit Function
-[ttable, xtable, ytable,p] = LeapFrogOrbit(n,p,t_end,dt);
+[ttable, xtable, ytable,p] = Simulation(n,p,t_end,dt);
+
+
 
 % plotting
 figure(1);
@@ -64,7 +67,6 @@ for i = 1:1:size(p,2)
     plot(p(2,:), p(3,:), "."); % particles current position
     plot(xtable(i,:),ytable(i,:)); % Particles travel in orbit
 end
-
 
 
 
