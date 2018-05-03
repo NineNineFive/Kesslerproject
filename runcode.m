@@ -3,8 +3,8 @@ clear
 
 
 % Simulation settings (leap-frog)
-t_end = 100; % Simulation seconds
-partikel_antal = 20; % Particle quantity
+t_end = 2500; % Simulation seconds
+partikel_antal = 2; % Particle quantity
 
 % Particles Data
 p = zeros(10,partikel_antal); % 10 variabler i partiklen, x antal partikler
@@ -72,7 +72,9 @@ earth = viscircles([0 0],r,'Color',[0 0.4 0]); % The earth
 for i = 1:1:size(p,2)
     plot(p(2,:), p(3,:), '.'); % particles current position
     plot(xtable(i,:),ytable(i,:)); % Particles travel in orbit
-    plot(p(14,:), p(15,:),'X');
+    if p(14,i)~=0&&p(15,i)~=0
+        plot(p(14,i), p(15,i),'X');
+    end
 end
 
 % Clear variables from workspace
