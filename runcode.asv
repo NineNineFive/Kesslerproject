@@ -46,15 +46,15 @@ p = values;
 
 
 % LeapFrog Orbit Function
-%[ttable, xtable, ytable,p] = Simulation(n,p,t_end,dt);
+[ttable, xtable, ytable,p] = Simulation(n,p,t_end,dt);
 
 
 
 % plotting
 figure(1);
-%plot(ttable(i,:),xtable(i,:));
+plot(ttable(i,:),xtable(i,:));
 hold on
-%plot(ttable(i,:),ytable(i,:));
+plot(ttable(i,:),ytable(i,:));
 
 figure(2);
 axis equal;
@@ -62,12 +62,12 @@ grid on;
 hold on;
 xlabel('X position');
 ylabel('Y position');
-earth = viscircles([0 0],r,'Color',[0 0.4 0]); % The earth
+%viscircles([0 0],6.378e6,'Color',[0 0.4 0]); % The earth
 %earth.LineWidth = 1;
 %earth.Color = 'black';
 for i = 1:1:size(p,2)
-    %plot(p(2,:), p(3,:), '.'); % particles current position
-    %plot(xtable(i,:),ytable(i,:)); % Particles travel in orbit
+    plot(p(2,:), p(3,:), '.'); % particles current position
+    plot(xtable(i,:),ytable(i,:)); % Particles travel in orbit
 end
 
 

@@ -6,18 +6,13 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
      % Start the simulation at the initial contitions.
      t = 0;
      GM = p(4,:);
-     x = deal(p(5,:));
-     y = deal(p(6,:));
+     x = p(5,:); % x_0
+     y = p(6,:); % y_0
      
-     
-     v_0 = p(9,:);
      vinkel = p(7,:);
-    
-     v_x0 = -v_0.*sin(vinkel);
-     v_y0 = v_0.*cos(vinkel);
      
-     v_x = v_x0;
-     v_y = v_y0;
+     v_x = -p(9,:).*sin(vinkel); % V_x = -(V_0) * sin(vinkel)
+     v_y = p(9,:).*cos(vinkel); % V_y = (V_0) * cos(vinkel)
 
      for n=1:1:n
          % The LeapFrog method
@@ -34,18 +29,25 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
          v_y = v_y + a_y.*dt;
          v = [v_x;v_y];
          
-        for i=1:1:size(p,2) 
-         for j=i:1:size(p,2)
-            displacement = p(2:3,i)-p(2:3,j);
-            distance(i,j) = sum(displacement.^2);
-            if(distance(i,j)<=100+100)
-                p(11,i) = true; 
-                p(12,i) = distance(i,j);
-            else
-                p(11,i) = false;
-            end
-         end
          
+         % Distancen tager forhold til alle partiklers sum
+         % den skal kun tage forhold til en partikel for sig's sums
+         for i=1:1:size(p,2) 
+             for j=i+1:1:size(p,2)
+                 displacem = p(2:3,i)-p(2:3,j); % displacem=par1xy-par2xy
+                 distance = sum(displacem.^2);
+                 if(distance<=100+100)
+                    p(13,i) = true; 
+                    p(12,i) = distance;
+                    %disp(distance);
+                 else
+                     %disp(distance);
+                     %p(13,i) = false;
+                     %p(12,i) = distance;
+                    
+                 end
+             end
+         end
          
          % Update the position
          x = x + v_x*dt;
@@ -63,6 +65,5 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
              ytable(i, n) = p(3,i);
          end
          
-     end
 
 end
