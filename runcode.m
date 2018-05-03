@@ -64,7 +64,7 @@ earth = viscircles([0 0],r,'Color',[0 0.4 0]); % The earth
 %earth.LineWidth = 1;
 %earth.Color = 'black';
 for i = 1:1:size(p,2)
-    plot(p(2,:), p(3,:), "."); % particles current position
+    plot(p(2,:), p(3,:), '.'); % particles current position
     plot(xtable(i,:),ytable(i,:)); % Particles travel in orbit
 end
 

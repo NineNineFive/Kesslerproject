@@ -28,8 +28,8 @@ for i=1:1:size(p,2)
          t = t + dt;   % Update the time
          
          % Calculate acceleration on a mass attached to spring
-         a_x = -GM*(x/((x_0.^2+y_0.^2)^1.5));      
-         a_y = -GM*(y/((x_0.^2+y_0.^2)^1.5));  
+         a_x = -GM*(x/((x.^2+y.^2)^1.5));      
+         a_y = -GM*(y/((x.^2+y.^2)^1.5));  
          
          
          
