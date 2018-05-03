@@ -13,8 +13,8 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
      v_0 = p(9,:);
      vinkel = p(7,:);
     
-     v_x0 = -v_0.*sin(vinkel);
-     v_y0 = v_0.*cos(vinkel);
+     v_x0 = -v_0*sin(vinkel);
+     v_y0 = v_0*cos(vinkel);
      
      v_x = v_x0;
      v_y = v_y0;
@@ -24,17 +24,17 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
          t = t + dt;   % Update the time
          
          % Calculate acceleration on a mass attached to spring
-         a_x = -GM.*(x./((x.^2+y.^2).^1.5));      
-         a_y = -GM.*(y./((x.^2+y.^2).^1.5));  
+         a_x = -GM.*(x/((x.^2+y.^2)^1.5));      
+         a_y = -GM.*(y/((x.^2+y.^2)^1.5));  
          
          
          
          % Update the velocity
-         v_x = v_x + a_x.*dt; 
-         v_y = v_y + a_y.*dt;
-         v = [v_x;v_y];
+         v_x = v_x. + a_x.*dt; 
+         v_y = v_y. + a_y.*dt;
+         v = [v_x.;v_y];
          
-        for i=1:1:size(p,2) 
+         
          for j=i:1:size(p,2)
             displacement = p(2:3,i)-p(2:3,j);
             distance(i,j) = sum(displacement.^2);
@@ -51,18 +51,14 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
          x = x + v_x*dt;
          y = y + v_y*dt;
 
-         
-         p(2,:) = x;
-         p(3,:) = y;
-         p(10,:) = t;
-         
          % t, v, and x are stored for later use, e.g., plot(ttable,xtable)
-         for i=1:1:size(p,2)
-             ttable(i, n) = p(10,i);
-             xtable(i, n) = p(2,i);
-             ytable(i, n) = p(3,i);
-         end
+         ttable(i, n) = t;
+         xtable(i, n) = x;
+         ytable(i, n) = y;
          
+         p(2,i) = x;
+         p(3,i) = y;
+         p(10,i) = t;
      end
 
 end
