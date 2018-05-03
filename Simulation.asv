@@ -32,7 +32,7 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
          y = y + v_y*dt;         
          
          % Update particle data
-         if p(13,:)~=1 % IF COLLISION THE WHOLE SIMULATION WILL STOP
+         if p(13,:)~=1 % å
              p(2,:) = x;
              p(3,:) = y;
          end
