@@ -3,7 +3,7 @@ clear
 
 
 % Simulation settings (leap-frog)
-t_end = 500; % Simulation seconds
+t_end = 100; % Simulation seconds
 partikel_antal = 20; % Particle quantity
 
 % Particles Data
@@ -17,7 +17,7 @@ r = 6.378e6; % Orbits radius from earth
 G = 6.67e-11; % Graviation constant
 M = 5.98e24; % Mass
 
-p = zeros(13,partikel_antal);
+p = zeros(15,partikel_antal);
 for i=1:1:size(p,2)
     inverted = randi([0,1],1,1);
     h = randi([250000,250000],1,1); %højde i meter
@@ -35,14 +35,16 @@ for i=1:1:size(p,2)
         v_0(i) = -sqrt(G*M/(r+h));
     end    
     GM(i) = G*M;
-    objsize(i) = randi([100,1000],1,1);
+    objsize(i) = randi([10000,20000],1,1);
     distance(i) = 0;
     collided(i) = 0;
+    collided2(i) = 0;
+    collided3(i) = 0;
 end
 
 %| 1:id | 2:x | 3:y | 4:GM | 5:x_0 (x) |6:y_0 (y) | 7:vi | 8:rh | 9:v_0 | 10:tid |
 %11:objsize |
-values = [id;x;y;GM;x_0;y_0;vi;rh;v_0;tid;objsize;distance;collided;];
+values = [id;x;y;GM;x_0;y_0;vi;rh;v_0;tid;objsize;distance;collided;collided2;collided3;];
 p = values;
 
 
@@ -53,10 +55,10 @@ p = values;
 
 
 % plotting
-figure(1);
-plot(ttable(i,:),xtable(i,:));
-hold on
-plot(ttable(i,:),ytable(i,:));
+%figure(1);
+%plot(ttable(i,:),xtable(i,:));
+%hold on
+%plot(ttable(i,:),ytable(i,:));
 
 figure(2);
 axis equal;
@@ -70,6 +72,7 @@ earth = viscircles([0 0],r,'Color',[0 0.4 0]); % The earth
 for i = 1:1:size(p,2)
     plot(p(2,:), p(3,:), '.'); % particles current position
     plot(xtable(i,:),ytable(i,:)); % Particles travel in orbit
+    plot(p(14,:), p(15,:),'X');
 end
 
 % Clear variables from workspace
