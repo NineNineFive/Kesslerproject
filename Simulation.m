@@ -40,22 +40,24 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
          
          
          % Collisions
-         for i=1:1:size(p,2) % Particle 1
-            for j=i:1:size(p,2) % Particle 2
-                 if(i~=j)
-                    displacem = p(2:3,i)+v-p(2:3,j); % displacem=par1xy-par2xy
-                     distance = sum(displacem.^2); % The distance between the particles
-                     if(distance<=(p(11,i)+p(11,j))^2) % distance <= particle(i+y, objRadius)
-                        %p(12,i) = distance; % Distance between the particles when they collided
-                        p(13,i) = true; % is 1 if collision happened and is recorded in the particles data
-                        p(14,i) = p(2,i);
-                        p(15,i) = p(3,i);
-                     else
-                         %p(13,i) = false; %% is 0 if%collision didnt happen at all
-                         %p(12,i) = distance;  % Distance between the particles when they collided
+         if mod(n,10)==0
+             for i=1:1:size(p,2) % Particle 1
+                for j=i+1:1:size(p,2) % Particle 2
+                     if(i~=j)
+                        displacem = p(2:3,i)+v-p(2:3,j); % displacem=par1xy-par2xy
+                         distance = sum(displacem.^2); % The distance between the particles
+                         if(distance<=(p(11,i)+p(11,j))^2) % distance <= particle(i+y, objRadius)
+                            %p(12,i) = distance; % Distance between the particles when they collided
+                            p(13,i) = true; % is 1 if collision happened and is recorded in the particles data
+                            p(14,i) = p(2,i);
+                            p(15,i) = p(3,i);
+                         else
+                             %p(13,i) = false; %% is 0 if%collision didnt happen at all
+                             %p(12,i) = distance;  % Distance between the particles when they collided
+                         end
                      end
-                 end
-            end
+                end
+             end
          end
          
          % the particle's travel data

@@ -32,7 +32,7 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
          y = y + v_y*dt;         
          
          % Update particle data
-         if p(13,:)~=1 % å
+         if p(13,:)~=1 % IF COLLISION THE WHOLE SIMULATION WILL STOP
              p(2,:) = x;
              p(3,:) = y;
          end
@@ -40,8 +40,9 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
          
          
          % Collisions
+         if mod(n,10)==0
          for i=1:1:size(p,2) % Particle 1
-            for j=i:1:size(p,2) % Particle 2
+            for j=i+1:1:size(p,2) % Particle 2
                  if(i~=j)
                     displacem = p(2:3,i)+v-p(2:3,j); % displacem=par1xy-par2xy
                      distance = sum(displacem.^2); % The distance between the particles

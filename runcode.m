@@ -4,7 +4,7 @@ clear
 
 % Simulation settings (leap-frog)
 t_end = 7000; % Simulation seconds
-partikel_antal = 20; % Particle quantity
+partikel_antal = 200; % Particle quantity
 
 % Particles Data
 p = zeros(10,partikel_antal); % 10 variabler i partiklen, x antal partikler
@@ -35,7 +35,7 @@ for i=1:1:size(p,2)
         v_0(i) = -sqrt(G*M/(r+h));
     end    
     GM(i) = G*M;
-    objsize(i) = randi([10000,20000],1,1);
+    objsize(i) = randi([1,100],1,1);
     distance(i) = 0;
     collided(i) = 0;
     collided2(i) = 0;
