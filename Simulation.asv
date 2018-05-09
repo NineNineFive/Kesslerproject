@@ -46,7 +46,7 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
                         % parallel
                         
                         % pjiparallel = (dot((p(2:3,j)-p(2:3,i), p(5:6,j)-p(5:6,j))*p(5:6,j)-p(5:6,j))/norm(p(5:6,j)-p(5:6,j)).^2)
-                        % pjiparallel = (dot((pij, vij)*vij)/norm(Vij).^2)
+                        % pjiparallel = (dot((p(2:3,j)-p(2:3,i), vij)*vij)/norm(Vij).^2)
                         
                         % vinkelret
                         

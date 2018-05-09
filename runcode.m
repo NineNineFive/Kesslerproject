@@ -23,17 +23,19 @@ for i=1:1:size(p,2)
     h = randi([250000,250000],1,1); %højde i meter
     id(i) = i;
     vi(i) = deg2rad(randi([1 360],1,1));
-    x(i) = 0;
-    y(i) = 0;
+    x(i) = (r+h)*cos(vi(i));
+    y(i) = (r+h)*sin(vi(i));
     tid(i) = i;
-    x_0(i) = (r+h)*cos(vi(i));
-    y_0(i) = (r+h)*sin(vi(i));
+    % x_0(i) = (r+h)*cos(vi(i));
+    % y_0(i) = (r+h)*sin(vi(i));
     rh(i) = r+h;
     if(inverted==1)
         v_0(i) = sqrt(G*M/(r+h));
     else
         v_0(i) = -sqrt(G*M/(r+h));
     end    
+    v_x(i) = -v_0(i)*sin(vi(i)); % V_x = -(V_0) * sin(vinkel)
+    v_y(i) = v_0(i)*cos(vi(i)); % V_y = (V_0) * cos(vinkel)
     GM(i) = G*M;
     objsize(i) = randi([10000,20000],1,1);
     distance(i) = 0;
@@ -42,9 +44,9 @@ for i=1:1:size(p,2)
     collided3(i) = 0;
 end
 
-%| 1:id | 2:x | 3:y | 4:GM | 5:x_0 (x) |6:y_0 (y) | 7:vi | 8:rh | 9:v_0 | 10:tid |
+%| 1:id | 2:x | 3:y | 4:GM | 5:v_x (x) |6:v_y (y) | 7:vi | 8:rh | 9:v_0 | 10:tid |
 %11:objsize |
-values = [id;x;y;GM;x_0;y_0;vi;rh;v_0;tid;objsize;distance;collided;collided2;collided3;];
+values = [id;x;y;GM;v_x;v_y;vi;rh;v_0;tid;objsize;distance;collided;collided2;collided3;];
 p = values;
 
 
