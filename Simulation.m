@@ -44,21 +44,23 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt);
                 for j=i+1:1:size(p,2) % Particle 2
                      if(i~=j)
                         % parallel
-                        
-                        % pjiparallel = (dot((p(2:3,j)-p(2:3,i), p(5:6,j)-p(5:6,j))*p(5:6,j)-p(5:6,j))/norm(p(5:6,j)-p(5:6,j)).^2)
-                        % pjiparallel = (dot((pij, vij)*vij)/norm(Vij).^2)
+                        pji = p(2:3,j)-p(2:3,i);
+                        vij = p(5:6,j)-p(5:6,i);
+                        % pjiparallel = (dot((p(2:3,j)-p(2:3,i)), p(5:6,j)-p(5:6,j))*p(5:6,j)-p(5:6,j))/(norm(p(5:6,j)-p(5:6,j)).^2);
+                        pjiparallel = (dot(pji, vij)*vij)/(norm(vij).^2);
                         
                         % vinkelret
                         
-                        % pjivinkelret = pji - pjiparallel;
+                        pjivinkelret = pji - pjiparallel;
                         
                         % then - if((norm(Pijparallel)<norm(vij)*dt)&&norm(pjivinkelret)<p(11,i) + p(11,j))
+                        if((norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < p(11,i) + p(11,j))
                         
-                        displacem = p(2:3,i)-p(2:3,j); % displacem=par1xy-par2xy
-                        displacemStart = p(2:3,i)-p(2:3,j); % displacem=par1xy-par2xy
-                        distanceStart = sum(displacem.^2); % The distance between the particles
-                         distance = sum(displacem.^2); % The distance between the particles
-                         if(distance<=(p(11,i)+p(11,j))^2||distance<=(p(11,i)+p(11,j))^2) % distance <= particle(i+y, objRadius)
+                        % displacem = p(2:3,i)-p(2:3,j); % displacem=par1xy-par2xy
+                        % displacemStart = p(2:3,i)-p(2:3,j); % displacem=par1xy-par2xy
+                        % distanceStart = sum(displacem.^2); % The distance between the particles
+                        % distance = sum(displacem.^2); % The distance between the particles
+                        % if(distance<=(p(11,i)+p(11,j))^2||distance<=(p(11,i)+p(11,j))^2) % distance <= particle(i+y, objRadius)
                             %p(12,i) = distance; % Distance between the particles when they collided
                             p(13,i) = true; % is 1 if collision happened and is recorded in the particles data
                             p(14,i) = p(2,i);
