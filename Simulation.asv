@@ -16,17 +16,17 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
          t = t + dt;   % Update the time
          
          % Calculate acceleration on a mass attached to spring
-         a_x = -GM.*(x./((x.^2+y.^2).^1.5));      
-         a_y = -GM.*(y./((x.^2+y.^2).^1.5));  
+         a_x = -GM.*(p(2,:)./((p(2,:).^2+p(3,:).^2).^1.5));      
+         a_y = -GM.*(p(3,:)./((p(2,:).^2+p(3,:).^2).^1.5));  
          
          % Update the velocity
-         v_x = v_x + a_x.*dt; 
-         v_y = v_y + a_y.*dt;
+         v_x = p(5,:) + a_x.*dt; 
+         v_y = p(6,:) + a_y.*dt;
          v = [v_x;v_y];
          
          % Update the position calculation
-         x = x + v_x*dt;
-         y = y + v_y*dt;         
+         x = p(2,:) + p(5,:)*dt;
+         y = p(3,:) + p(6,:)*dt;         
          
          % Update particle data
          p(2,:) = x;
@@ -38,7 +38,7 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
          % Collisions
          %if mod(n,10)==0
              for i=1:1:size(p,2) % Particle 1
-                for j=i+1:1:size(p,2) % Particle 2
+                for j=1:1:size(p,2) % Particle 2
                      if(i~=j)
                         % parallel
                         pji = p(2:3,j)-p(2:3,i);
@@ -52,13 +52,42 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
                         
                         % then - if((norm(Pijparallel)<norm(vij)*dt)&&norm(pjivinkelret)<p(11,i) + p(11,j))
                         if((norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < p(11,i) + p(11,j))
-                            p(13,i) = true; % is 1 if collision happened and is recorded in the particles data
+                            % Partikel 1
+                            p(16,i) = 1/2*p(12,i)*( norm([p(5,i);p(6,i)]) )^2; % Formlen for energi: 1/2*objMasse*(velocity)^2
+                            p(13,i) = p(13,i)+1; % is 1 if collision happened and is recorded in the particles data
                             p(14,i) = p(2,i);
                             p(15,i) = p(3,i);
                             
-                            p(13,j) = true; % is 1 if collision happened and is recorded in the particles data
+                            
+                            
+                            impuls = p(12,i)*[p(5,i);p(6,i)];   %impuls p = m*v
+                            
+                            
+                            p(5,i) = -p(5,i);
+                            p(6,i) = -p(6,i);
+                            
+                            
+                            
+                            
+                            % Partikel 2
+                            p(16,j) = 1/2*p(12,j)*( norm([p(5,j);p(6,j)]) )^2; % Formlen for energi: 1/2*objMasse*(velocity)^2
+                            p(13,j) = p(13,j)+1; % is 1 if collision happened and is recorded in the particles data
                             p(14,j) = p(2,j);
                             p(15,j) = p(3,j);
+                            
+                            impuls2 = p(12,j)*[p(5,j);p(6,j)];
+                            
+                            vcm = (impuls+impuls2)/(p(12,i)+p(12,j));
+                            
+                            p(5,j) = -p(5,j);
+                            p(6,j) = -p(6,j);
+                            
+                            
+                            values = [id;x;y;GM;v_x;v_y;angle;rh;v_0;tid;objsize;objm;collided;xColl;yColl;objkinenergy];
+                            p2 = values;
+                            
+                            p = p + p2;
+                            
                          else
                              %p(13,i) = false; %% is 0 if%collision didnt happen at all
                              %p(12,i) = distance;  % Distance between the particles when they collided

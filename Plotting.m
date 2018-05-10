@@ -1,10 +1,11 @@
 function [] = Plotting(p,ttable,xtable,ytable,r,n)
     % Plotting
-    figure(2);
+        figure(2);
 
         hold off
         plot(p(2,:), p(3,:), '.'); % particles current position
         axis equal;
+        axis([-8000000 8000000 -8000000 8000000])
         grid on;
         xlabel('X position');
         ylabel('Y position');

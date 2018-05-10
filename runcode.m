@@ -3,8 +3,8 @@ clear
 
 
 % Simulation settings (leap-frog)
-t_end = 800; % Simulation seconds
-partikel_antal = 25; % Particle quantity
+t_end = 10000; % Simulation seconds
+partikel_antal = 6; % Particle quantity
 
 % Particles Data
 % p = zeros(10,partikel_antal); % 10 variabler i partiklen, x antal partikler
@@ -23,7 +23,7 @@ p = zeros(15,partikel_antal);
 for i=1:1:size(p,2)
     id(i) = i;
     tid(i) = i;
-    h = randi([200000,400000],1,1); %højde i meter
+    h = randi([200000,200000],1,1); %højde i meter
     inverted = randi([0,1],1,1);
     if(inverted==1) v_0(i) = sqrt(G*M/(r+h));
     else v_0(i) = -sqrt(G*M/(r+h));
@@ -41,13 +41,13 @@ for i=1:1:size(p,2)
     collided(i) = 0;
     xColl(i) = 0;
     yColl(i) = 0;
+    objkinenergy(i) = 0;
 end
 
 % Particle data (p)
 %| 1:id | 2:x | 3:y | 4:GM | 5:v_x |6:v_y | 7:vi | 8:rh | 9:v_0 | 10:tid |
-%11:objsize % | 12: objmCollision (true/false) | 13: coll X | 14: Coll Y | 15:
-%Collision (true/false) |
-values = [id;x;y;GM;v_x;v_y;angle;rh;v_0;tid;objsize;objm;collided;xColl;yColl;];
+%11:objsize % | 12: objm | 13: Collision counters | 14: coll X | 15: Coll Y |
+values = [id;x;y;GM;v_x;v_y;angle;rh;v_0;tid;objsize;objm;collided;xColl;yColl;objkinenergy];
 p = values;
 
 % Simulation
