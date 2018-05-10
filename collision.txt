@@ -1,0 +1,15 @@
+2 particles 
+
+collision -> transform into Center Of Mass frame
+
+create new particles
+
+choose impulse for new particles (uniform distribution (-1, 1)) P_i, where i is new particles 
+
+total impulse corrected:  P_i - average
+
+v_i = P_i/m_i
+
+kinetic energi K (noget komlekst shit som jeg ikke forstå men vist mest er for at bevare mass og impulse)
+
+transform back to earth rest frame
