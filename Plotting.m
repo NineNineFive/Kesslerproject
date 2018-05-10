@@ -21,7 +21,7 @@ function [] = Plotting(p,ttable,xtable,ytable,r,n)
 end
 
 % not live function of plot
-
+%function [] = Plotting(p,ttable,xtable,ytable,r,n)
 % Plotting
 % figure(2);
 % axis equal;
@@ -37,3 +37,4 @@ end
 %         plot(p(13,i), p(14,i),'X');
 %     end
 % end
+%end
