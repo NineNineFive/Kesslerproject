@@ -52,13 +52,13 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
                         
                         % then - if((norm(Pijparallel)<norm(vij)*dt)&&norm(pjivinkelret)<p(11,i) + p(11,j))
                         if((norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < p(11,i) + p(11,j))
-                            p(12,i) = true; % is 1 if collision happened and is recorded in the particles data
-                            p(13,i) = p(2,i);
-                            p(14,i) = p(3,i);
+                            p(13,i) = true; % is 1 if collision happened and is recorded in the particles data
+                            p(14,i) = p(2,i);
+                            p(15,i) = p(3,i);
                             
-                            p(12,j) = true; % is 1 if collision happened and is recorded in the particles data
-                            p(13,j) = p(2,j);
-                            p(14,j) = p(3,j);
+                            p(13,j) = true; % is 1 if collision happened and is recorded in the particles data
+                            p(14,j) = p(2,j);
+                            p(15,j) = p(3,j);
                          else
                              %p(13,i) = false; %% is 0 if%collision didnt happen at all
                              %p(12,i) = distance;  % Distance between the particles when they collided

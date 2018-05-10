@@ -10,8 +10,8 @@ function [] = Plotting(p,ttable,xtable,ytable,r,n)
         ylabel('Y position');
         hold on;
         for i=1:1:size(p,2)
-            if p(13,i)~=0&&p(14,i)~=0
-                plot(p(13,i), p(14,i),'X');
+            if p(14,i)~=0&&p(15,i)~=0
+                plot(p(14,i), p(15,i),'X');
             end
         end
 
