@@ -3,8 +3,8 @@ clear
 
 
 % Simulation settings (leap-frog)
-t_end = 6000; % Simulation seconds
-partikel_antal = 15; % Particle quantity
+t_end = 800; % Simulation seconds
+partikel_antal = 25; % Particle quantity
 
 % Particles Data
 % p = zeros(10,partikel_antal); % 10 variabler i partiklen, x antal partikler
@@ -23,7 +23,7 @@ p = zeros(15,partikel_antal);
 for i=1:1:size(p,2)
     id(i) = i;
     tid(i) = i;
-    h = randi([200000,200000],1,1); %højde i meter
+    h = randi([200000,800000],1,1); %højde i meter
     inverted = randi([0,1],1,1);
     if(inverted==1) v_0(i) = sqrt(G*M/(r+h));
     else v_0(i) = -sqrt(G*M/(r+h));
@@ -35,7 +35,7 @@ for i=1:1:size(p,2)
     v_y(i) = v_0(i)*cos(angle(i)); % V_y = (V_0) * cos(vinkel)
     rh(i) = r+h;
     GM(i) = G*M;
-    objsize(i) = randi([1,200],1,1);
+    objsize(i) = randi([2000,6000],1,1);
     distance(i) = 0;
     collided(i) = 0;
     xColl(i) = 0;
