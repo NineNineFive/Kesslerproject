@@ -1,11 +1,11 @@
 % Reset past variables
 clear 
 
-live_simulation = true;
+live_simulation = false;
 
 % Simulation settings (leap-frog)
-t_end = 60000; % Simulation seconds
-partikel_antal = 6; % Particle quantity
+t_end = 5269; % Simulation seconds
+partikel_antal = 20; % Particle quantity
 
 % Particles Data
 % p = zeros(10,partikel_antal); % 10 variabler i partiklen, x antal partikler
@@ -19,12 +19,12 @@ G = 6.67e-11; % Graviation constant
 M = 5.98e24; % Mass
 
 % Particle Start Parameters 
-p = zeros(15,partikel_antal);
+p = zeros(16,partikel_antal);
 
 for i=1:1:size(p,2)
     id(i) = i;
     tid(i) = i;
-    h = randi([200000,200000],1,1); %højde i meter
+    h = randi([200900,201000],1,1); %højde i meter
     inverted = randi([0,1],1,1);
     if(inverted==1) v_0(i) = sqrt(G*M/(r+h));
     else v_0(i) = -sqrt(G*M/(r+h));
@@ -56,3 +56,4 @@ p = values;
 
 % Clear variables from workspace
 clearvars id dt G v h G M GM tid pv v_x v_y v_0 r rh t x y values inverted angle i n objsize collided distance xColl yColl; 
+clear;
