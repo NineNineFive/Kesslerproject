@@ -1,9 +1,10 @@
 % Reset past variables
 clear 
 
+live_simulation = true;
 
 % Simulation settings (leap-frog)
-t_end = 1000; % Simulation seconds
+t_end = 60000; % Simulation seconds
 partikel_antal = 6; % Particle quantity
 
 % Particles Data
@@ -51,11 +52,7 @@ values = [id;x;y;GM;v_x;v_y;angle;rh;v_0;tid;objsize;objm;collided;xColl;yColl;o
 p = values;
 
 % Simulation
-[ttable, xtable, ytable,p] = Simulation(n,p,t_end,dt,r);
-
-% not live plotting
-%Plotting(p,ttable,xtable,ytable,r);
-
+[ttable, xtable, ytable,p] = Simulation(n,p,t_end,dt,r,live_simulation);
 
 % Clear variables from workspace
 clearvars id dt G v h G M GM tid pv v_x v_y v_0 r rh t x y values inverted angle i n objsize collided distance xColl yColl; 

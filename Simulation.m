@@ -1,4 +1,4 @@
-function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
+function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r,live_simulation)
 
 % Initalize empty tables
 [ttable,xtable,ytable] = deal(zeros(size(p,2),n));
@@ -36,7 +36,6 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
          p(6,:) = v_y;
          
          % Collisions
-         %if mod(n,10)==0
              for i=1:1:size(p,2) % Particle 1
                 for j=1:1:size(p,2) % Particle 2
                      if(i~=j)
@@ -72,7 +71,11 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
                             
                             % Center of mass frame
                             vcm = (impuls+impuls2)/(p(12,i)+p(12,j)); % Velocity - Center of Mass
-                            energiud = (p(16,i)+p(16,j))*(2/3); 
+                            
+                            energisum = p(16,i)+p(16,j);
+                            energiud = energisum*(2/3);
+                            
+                            
                             
                             
                             
@@ -84,11 +87,11 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
                             %p = p + p2;
                             
                             
-                            p(5,i) = -p(5,i);
-                            p(6,i) = -p(6,i);
+                            %p(5,i) = -p(5,i);
+                            %p(6,i) = -p(6,i);
                             
-                            p(5,j) = -p(5,j);
-                            p(6,j) = -p(6,j);
+                            %p(5,j) = -p(5,j);
+                            %p(6,j) = -p(6,j);
                             
                          else
                              %p(13,i) = false; %% is 0 if%collision didnt happen at all
@@ -97,7 +100,7 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
                      end
                 end
              end
-         %end
+
           
          % the particle's travel data
          for i=1:1:size(p,2)
@@ -107,7 +110,13 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
          end
          
          % live plotting
-         if mod(n,10)==0
-            Plotting(p,ttable,xtable,ytable,r,n);
+         if live_simulation==true && mod(n,10)==0
+            Plotting(p,ttable,xtable,ytable,r,n, live_simulation);
          end
+    end
+    
+    
+    % not live plotting
+    if(live_simulation==false)
+        Plotting(p,ttable,xtable,ytable,r,n,live_simulation);
     end
