@@ -3,7 +3,7 @@ clear
 
 
 % Simulation settings (leap-frog)
-t_end = 10000; % Simulation seconds
+t_end = 1000; % Simulation seconds
 partikel_antal = 6; % Particle quantity
 
 % Particles Data

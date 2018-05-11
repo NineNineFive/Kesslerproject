@@ -72,7 +72,7 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r)
                             
                             % Center of mass frame
                             vcm = (impuls+impuls2)/(p(12,i)+p(12,j)); % Velocity - Center of Mass
-                            
+                            energiud = (p(16,i)+p(16,j))*(2/3); 
                             
                             
                             
