@@ -1,7 +1,7 @@
 % Reset past variables
 clear 
 
-live_simulation = false;
+live_simulation = true;
 
 % Simulation settings (leap-frog)
 t_end = 5269; % Simulation seconds
