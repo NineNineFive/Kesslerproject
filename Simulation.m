@@ -15,24 +15,20 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r,live_simulation)
          t = t + dt;   % Update the time
          
          % Calculate acceleration on a mass attached to spring
-         a_x = -GM.*(p(2,:)./((p(2,:).^2+p(3,:).^2).^1.5));      
-         a_y = -GM.*(p(3,:)./((p(2,:).^2+p(3,:).^2).^1.5));  
-         
+         a = -GM.*(p(2:3,:)./((p(2,:).^2+p(3,:).^2).^1.5));      
+
          % Update the velocity
-         v_x = p(5,:) + a_x.*dt; 
-         v_y = p(6,:) + a_y.*dt;
-         v = [v_x;v_y];
+         v = p(5:6,:) + a.*dt; 
          
          % Update the position calculation
          x = p(2,:) + p(5,:)*dt;
          y = p(3,:) + p(6,:)*dt;         
          
          % Update particle data
-         p(2,:) = x;
-         p(3,:) = y;
+         p(2:3,:) = [x;y];
+         p(5:6,:) = v;
          p(10,:) = t;
-         p(5,:) = v_x;
-         p(6,:) = v_y;
+         
          
          % Collisions
              for i=1:1:size(p,2) % Particle 1
@@ -52,20 +48,19 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r,live_simulation)
                         if((norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < p(11,i) + p(11,j))
                             % Partikel 1
                             p(13,i) = p(13,i)+1; % is 1 if collision happened and is recorded in the particles data
-                            p(14,i) = p(2,i);
-                            p(15,i) = p(3,i);   
+                            p(14:15,i) = p(2:3,i); % Position of collisions  
                             
-                            impuls = p(12,i)*[p(5,i);p(6,i)];   %impuls p = m*v
-                            p(16,i) = 1/2*p(12,i)*( norm([p(5,i);p(6,i)]) )^2; % Formlen for energi: 1/2*objMasse*(velocity)^2
+                            impuls = p(12,i)*p(5:6,i);   %impuls p = m*v
+                            p(16,i) = 1/2*p(12,i)*( norm(p(5:6,i)) )^2; % Formlen for energi: 1/2*objMasse*(velocity)^2
                             
                                 
                             % Partikel 2
                             p(13,j) = p(13,j)+1; % is 1 if collision happened and is recorded in the particles data
-                            p(14,j) = p(2,j);
-                            p(15,j) = p(3,j);
+                            p(14:15,j) = p(2:3,j);
+                          
                             
                             impuls2 = p(12,j)*[p(5,j);p(6,j)];
-                            p(16,j) = 1/2*p(12,j)*( norm([p(5,j);p(6,j)]) )^2; % Formlen for energi: 1/2*objMasse*(velocity)^2
+                            p(16,j) = 1/2*p(12,j)*(norm(p(5:6,j))^2); % Formlen for energi: 1/2*objMasse*(velocity)^2
                             
                             
                             % Center of mass frame
@@ -100,59 +95,9 @@ function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r,live_simulation)
                             %sqrt(k_ind1)*[p(5,i);p(6,i)]
                             
                             % Set new velocity for existing particles
-                            p(5,i) = -p(5,i);
-                            p(6,i) = -p(6,i);
-                            p(5,j) = -p(5,j);
-                            p(6,j) = -p(6,j);
-                            
-%                             % Create new particles
-%                             antalnyepartikler = 2;
-%                             
-%                             
-%                             r_ = 6.378e6; % Orbits radius from earth
-%                             G_ = 6.67e-11; % Graviation constant
-%                             M_ = 5.98e24; % Mass
-%                             
-%                             for a=1:1:antalnyepartikler
-%                                 id_(a) = a;
-%                                 tid_(a) = a;
-%                                 h_ = randi([200000,200000],1,1); %højde i meter
-%                                 %if somestatement inverted = 0 else inverted = 1
-%                                 %if(inverted==1) v_0(a) = sqrt(G*M/(r+h));
-%                                 %else 
-%                                 v_0_(a) = -sqrt(G_*M_/(r_+h_));
-%                                 %end  
-%                                 x_(a) = p(2,i)-p(2,j);
-%                                 y_(a) = p(3,i)-p(3,j);
-%                                 v_x_(a) = p(5,i)-p(5,j); % V_x = -(V_0) * sin(vinkel)
-%                                 v_y_(a) = p(6,i)-p(6,j); % V_y = (V_0) * cos(vinkel)
-%                                 rh_(a) = r_+h_;
-%                                 GM_(a) = G_*M_;
-%                                 angle_(a) = 0;
-%                                 objsize_(a) = randi([1,15],1,1);
-%                                 objm_(a) = (10^(2.51*log(objsize_(a)*2)+1.93))*10^-3;
-%                                 distance_(a) = 0;
-%                                 collided_(a) = 0;
-%                                 xColl_(a) = 0;
-%                                 yColl_(a) = 0;
-%                                 objkinenergy_(a) = 0;
-%                             end
-%     
-%                                 
-%                             values_ = [id_;x_;y_;GM_;v_x_;v_y_;angle_;rh_;v_0_;tid_;objsize_;objm_;collided_;xColl_;yColl_;objkinenergy_];
-%                             p2 = values_;
-%                             disp(size(p));
-%                             disp(size(p2));
-%                             p=horzcat(p,p2);
-%                             GM = p(4,:);
-%                             x = p(2,:); % x_0
-%                             y = p(3,:); % y_0
-%                             v_x = p(5,:);
-%                             v_y = p(6,:);
+                            p(5:6,i) = -p(5:6,i);
+                            p(5:6,j) = -p(5:6,j);
 
-                         else
-                             %p(13,i) = false; %% is 0 if%collision didnt happen at all
-                             %p(12,i) = distance;  % Distance between the particles when they collided
                          end
                      end
                 end

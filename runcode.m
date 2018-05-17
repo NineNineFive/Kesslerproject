@@ -48,7 +48,7 @@ end
 % Particle data (p)
 %| 1:id | 2:x | 3:y | 4:GM | 5:v_x |6:v_y | 7:vi | 8:rh | 9:v_0 | 10:tid |
 %11:objsize % | 12: objm | 13: Collision counters | 14: coll X | 15: Coll Y |
-values = [id;x;y;GM;v_x;v_y;angle;rh;v_0;tid;objsize;objm;collided;xColl;yColl;objkinenergy];
+values = [id;x;y;GM;v;angle;rh;v_0;tid;objsize;objm;collided;xColl;yColl;objkinenergy];
 p = values;
 
 % Simulation
