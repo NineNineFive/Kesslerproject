@@ -1,4 +1,4 @@
-function [] = Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t)
+function [] = Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos)
     if(live_simulation==true)
         % Plotting
         figure(2);
@@ -8,26 +8,21 @@ function [] = Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t)
         text(p(2,:),p(3,:),"P"+p(1,:));
         
         axis equal;
-        %axis([-17000000 17000000 -17000000 17000000])
+        axis([-7000000 7000000 -7000000 7000000])
         grid on;
         xlabel('X position');
         ylabel('Y position');
         hold on;
         for i=1:1:size(p,2)
-            if p(15,i)>0
-                plot(p(16,i), p(17,i),'X');
+            if collisionCounter>0
+                plot(collisionPos(1,:), collisionPos(2,:),'X');
             end
         end
 
         earth = viscircles([0 0],r,'Color',[0 0.4 0]); % The earth
-        %for i=1:1:size
-        %colls = 
-        colls = 0;
-        for i=1:1:size(p,2)
-            colls = colls+p(15,i);
-        end
+
         text(0,900000,"Tidsskridt kørt: "+ t);
-        text(0,300000,"Kollisioner *8 = "+ colls);
+        text(0,300000,"Kollisioner = "+ collisionCounter);
         text(0,-300000,"antal partikler = "+ size(p,2));
         %plot(xtable(:,n),ytable(:,n)); % Particles travel in orbit
     else
@@ -38,7 +33,7 @@ function [] = Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t)
     % Plotting
     figure(2);
     axis equal;
-    axis([-7000000 7000000 -7000000 7000000])
+    %axis([-7000000 7000000 -7000000 7000000])
     grid on;     
     hold on;
     xlabel('X position');
@@ -49,16 +44,13 @@ function [] = Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t)
         text(p(2,:),p(3,:),"P"+p(1,:));
         
         plot(xtable(i,:),ytable(i,:)); % Particles travel in orbit
-        if p(15,i)>0
-            plot(p(16,i), p(17,i),'X');
+        if collisionCounter>0
+            plot(collisionPos(1,:), collisionPos(2,:),'X');
         end
     end
-    colls = 0;
-    for i=1:1:size(p,2)
-        colls = colls+p(15,i);
-    end
+
     text(0,900000,"Tidsskridt kørt: "+ t);
-    text(0,300000,"Kollisioner *8 = "+ colls);
+    text(0,300000,"Kollisioner = "+ collisionCounter);
     text(0,-300000,"antal partikler = "+ size(p,2));
     end
 end

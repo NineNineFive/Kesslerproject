@@ -5,8 +5,8 @@ clear
 live_simulation = true;
 
 % Simulation settings
-partikel_antal = 8; % Particle quantity
-t_end = 5269; % Simulation seconds
+partikel_antal = 10; % Particle quantity
+t_end = 1000; % Simulation seconds
 dt = 1; % Time-step
 n = ceil(t_end/dt); % Number of steps simulation has to run
 
@@ -24,11 +24,12 @@ h = randi([201000,201000],1,partikel_antal); % Random height in meters
 objSize = randi([1,15],1,partikel_antal); % Random radius size in meters
 angle = deg2rad(randi([1 360],1,partikel_antal)); % Random angle from earth
 inverted = randi([0,1],1,partikel_antal); % Random inverted direction
-kineticEnergy = zeros(1,partikel_antal);
 objMass = zeros(1,partikel_antal);
 collisionCounter = zeros(1,partikel_antal); % Count of collision
 collisionPos = zeros(3,partikel_antal); % Last collision x,y,z
 rh = r+h;
+
+nocollisionsplz = zeros(1,partikel_antal);
 % Set some of the particle parameters
 for i=1:1:partikel_antal
     id(i) = i;
@@ -43,14 +44,18 @@ for i=1:1:partikel_antal
     velocity(:,i) = [-v_0(i)*sin(angle(i)); v_0(i)*cos(angle(i)); 0];
     objMass(i) = (10^(2.51*log(objSize(i)*2)+1.93))*10^-3;
 end
+
+
 clear inverted h angle;
 
 % Particle data (p)
-%| 1: id | 2: x | 3: y | 4: z | 5: vel x |6: vel y | 7: vel z | 8: acceleration x | 9: acceleration y | 10: acceleration z | 11: v_0 | 12: objSize | 13: objMass |
-%14: kineticEnergy % | 15: collisionCounter | 16: collisionPos x | 17: collisionPos y | 18: collisionPos z | 19: rh |
-values = [id;position;velocity;acceleration;v_0;objSize;objMass;kineticEnergy;collisionCounter;collisionPos;rh;];
+%| 1: id | 2: x | 3: y | 4: z | 5: vel x |6: vel y | 7: vel z | 8:
+%acceleration x | 9: acceleration y | 10: acceleration z | 11: v_0 | 12:
+%objSize | 13: objMass | 14: nocollisionsplz |
+
+values = [id;position;velocity;acceleration;v_0;objSize;objMass;nocollisionsplz;];
 p = values;
-clear id position velocity v_0 objSize objMass kineticEnergy collisionCounter collisionPos time rh values;
+clear id position velocity v_0 objSize objMass kineticEnergy collisionCounter collisionPos time rh values nocollisionsplz;
 
 % Simulation
 [ttable, xtable, ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M);

@@ -6,16 +6,22 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
     % Initalize empty tables
     [ttable,xtable,ytable] = deal(zeros(size(p,2),n));
 
+    collisionCounter = 0;
+    collisionPos = [];
+    
     % Start the simulation at the initial contitions.
     t = 0; % Start time
     GM = G*M; % gravitition constant and the earth's mass
 
     for n=1:1:n
         t = t + dt;   % Update the time   
+        
         p(8:9,:) = -GM.*(p(2:3,:)./((p(2,:).^2+p(3,:).^2).^1.5)); % Calculate the acceleration  
         p(5:6,:) = p(5:6,:) + p(8:9,:)*dt; % Update the velocity with acceleration
         p(2:3,:) = p(2:3,:) + p(5:6,:)*dt; % Update the position with velocity
-
+        
+        p(14,:) = p(14,:)-dt;
+        
         % Collisions
         for i=1:1:size(p,2) % Particle 1
             for j=1:1:size(p,2) % Particle 2
@@ -25,29 +31,48 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
                     vij = p(5:6,j)-p(5:6,i);
                     pjiparallel = (dot(pji, vij)*vij)/(norm(vij).^2);
                     pjivinkelret = pji - pjiparallel;
+                    
 
-                    if((norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < p(12,i) + p(12,j))
+
+                    if(p(14,i)<=0&&p(14,j)<=0&&(norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < (p(12,i) + p(12,j))&&(p(2,i)~=p(2,j)&&p(3,i)~=p(3,j)))
                         % MakeCollision between particles
-                        [new_pos, new_vel, new_mass] = MakeCollision(p(2:3,i), p(2:3,j), p(5:6,i), p(5:6,j), p(13,i), p(13,j));
+                        [pos_new, vel_new, mass_new] = MakeCollision(p(2:3,i), p(2:3,j), p(5:6,i), p(5:6,j), p(13,i), p(13,j));
                         
-                        newParticle = 1;
-                        disp(new_vel(newParticle,:).');
-                        p(:,i) = [p(1,i);new_pos;0;new_vel(newParticle,:).';0;p(8:9,i);0;p(11,i);p(12,i);p(13,i);new_mass(newParticle,:).';0;[0;0;0];p(19,i);];
-                        newParticle = 2;
-                        p(:,j) = [p(1,j);new_pos;0;new_vel(newParticle,:).';0;p(8:9,j);0;p(11,j);p(12,j);p(13,j);new_mass(newParticle,:).';0;[0;0;0];p(19,j);];
-                        % new particle
-                        p_new = zeros(size(new_mass,1)-2,1);
-                        %for newParticle = 3:i:size(new_mass)
-                        %    p_new(newParticle) = [size(p,2)+newParticle-2;new_pos;0;new_vel(newParticle,:).';0;p(8:9,i);0;p(11,i);p(12,i);p(13,i);new_mass(newParticle,:).';0;[0;0;0];p(19,i);];
-                        %end
+                        collisionPos = [collisionPos, pos_new];
+                        collisionCounter = collisionCounter+1;
                         
-                        %p = p + p_new;
-
+                        for p_i = 1:1:size(mass_new,1)
+                            if p_i==1
+                                p(2:3,i) = pos_new;
+                                p(5:6,i) = vel_new(p_i,:);
+                                p(12,i) = 1;
+                                p(13,i) = mass_new(p_i,:);
+                                p(4,i) = 0;
+                                p(14,i) = 2;
+                            elseif p_i==2
+                                p(2:3,j) = pos_new;
+                                p(5:6,j) = vel_new(p_i,:);
+                                p(12,j) = 1;
+                                p(13,j) = mass_new(p_i,:);
+                                p(4,j) = 0;
+                                p(14,j) = 2;
+                            else
+                                id_new = size(p,2)+1;
+                                v_0_new = 0;
+                                objSize_new = 1;
+                                objMass_new = mass_new(p_i,:).';
+                                values_new = [id_new;pos_new;0;vel_new(p_i,:).';0;[0;0;0];v_0_new;objSize_new;objMass_new;2;];
+                                p_new = values_new;
+                                p = [p, p_new];
+                            end         
+                        end     
                     end
                 end
             end
         end
 
+            
+            
         % the particle's travel data
         for i=1:1:size(p,2)
             ttable(i, n) = n;
@@ -56,13 +81,13 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
         end
 
         % live plotting
-        if live_simulation==true && mod(n,15)==0
-            Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t);
+        if live_simulation==true && mod(n,1)==0
+            Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos);
         end
     end
 
     % not live plotting
     if(live_simulation==false)
-        Plotting(p,ttable,xtable,ytable,r,n,live_simulation,t);
+        Plotting(p,ttable,xtable,ytable,r,n,live_simulation,t,collisionCounter,collisionPos);
     end
 end
