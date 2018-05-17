@@ -34,7 +34,7 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
                     
 
 
-                    if(p(14,i)<=0&&p(14,j)<=0&&(norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < (p(12,i) + p(12,j))&&(p(2,i)~=p(2,j)&&p(3,i)~=p(3,j)))
+                    if(mod(n,10)&&p(14,i)<=0&&p(14,j)<=0&&(norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < (p(12,i) + p(12,j))&&(p(2,i)~=p(2,j)&&p(3,i)~=p(3,j)))
                         % MakeCollision between particles
                         [pos_new, vel_new, mass_new] = MakeCollision(p(2:3,i), p(2:3,j), p(5:6,i), p(5:6,j), p(13,i), p(13,j));
                         
@@ -81,7 +81,7 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
         end
 
         % live plotting
-        if live_simulation==true && mod(n,1)==0
+        if live_simulation==true && mod(n,10)==0
             Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos);
         end
     end

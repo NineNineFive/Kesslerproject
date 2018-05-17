@@ -5,8 +5,8 @@ clear
 live_simulation = true;
 
 % Simulation settings
-partikel_antal = 10; % Particle quantity
-t_end = 1000; % Simulation seconds
+partikel_antal = 50; % Particle quantity
+t_end = 100; % Simulation seconds
 dt = 1; % Time-step
 n = ceil(t_end/dt); % Number of steps simulation has to run
 
@@ -26,7 +26,7 @@ angle = deg2rad(randi([1 360],1,partikel_antal)); % Random angle from earth
 inverted = randi([0,1],1,partikel_antal); % Random inverted direction
 objMass = zeros(1,partikel_antal);
 collisionCounter = zeros(1,partikel_antal); % Count of collision
-collisionPos = zeros(3,partikel_antal); % Last collision x,y,z
+collisionPos = ones(3,partikel_antal); % Last collision x,y,z
 rh = r+h;
 
 nocollisionsplz = zeros(1,partikel_antal);
