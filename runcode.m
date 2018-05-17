@@ -1,59 +1,61 @@
 % Reset past variables
 clear 
 
+% Plotting settings
 live_simulation = true;
 
-% Simulation settings (leap-frog)
-t_end = 5269; % Simulation seconds
+% Simulation settings
 partikel_antal = 20; % Particle quantity
-
-% Particles Data
-% p = zeros(10,partikel_antal); % 10 variabler i partiklen, x antal partikler
-
-
+t_end = 5269; % Simulation seconds
 dt = 1; % Time-step
 n = ceil(t_end/dt); % Number of steps simulation has to run
 
 r = 6.378e6; % Orbits radius from earth
 G = 6.67e-11; % Graviation constant
-M = 5.98e24; % Mass
+M = 5.98e24; % The Earths Mass
 
 % Particle Start Parameters 
-p = zeros(16,partikel_antal);
-
-for i=1:1:size(p,2)
+id = zeros(1,partikel_antal);
+position = zeros(3,partikel_antal); % Position: x,y,z
+velocity = zeros(3,partikel_antal); % velocity: x,y,z
+acceleration = zeros(3,partikel_antal); % acceleration x,y,z
+v_0 = zeros(1,partikel_antal); % for velocity calculation
+h = randi([200900,201000],1,partikel_antal); % Random height in meters
+objSize = randi([1,15],1,partikel_antal); % Random radius size in meters
+angle = deg2rad(randi([1 360],1,partikel_antal)); % Random angle from earth
+inverted = randi([0,1],1,partikel_antal); % Random inverted direction
+kineticEnergy = zeros(1,partikel_antal);
+objMass = zeros(1,partikel_antal);
+collisionCounter = zeros(1,partikel_antal); % Count of collision
+collisionPos = zeros(3,partikel_antal); % Last collision x,y,z
+rh = r+h;
+% Set some of the particle parameters
+for i=1:1:partikel_antal
     id(i) = i;
-    tid(i) = i;
-    h = randi([200900,201000],1,1); %højde i meter
-    inverted = randi([0,1],1,1);
-    if(inverted==1) v_0(i) = sqrt(G*M/(r+h));
-    else v_0(i) = -sqrt(G*M/(r+h));
+    
+    if(inverted(i)==1) 
+        v_0(i) = sqrt(G*M/(r+h(i)));
+    else
+        v_0(i) = -sqrt(G*M/(r+h(i)));
     end  
-    angle(i) = deg2rad(randi([1 360],1,1));
-    x(i) = (r+h)*cos(angle(i));
-    y(i) = (r+h)*sin(angle(i));
-    v_x(i) = -v_0(i)*sin(angle(i)); % V_x = -(V_0) * sin(vinkel)
-    v_y(i) = v_0(i)*cos(angle(i)); % V_y = (V_0) * cos(vinkel)
-    rh(i) = r+h;
-    GM(i) = G*M;
-    objsize(i) = randi([1,15],1,1);
-    objm(i) = (10^(2.51*log(objsize(i)*2)+1.93))*10^-3;
-    distance(i) = 0;
-    collided(i) = 0;
-    xColl(i) = 0;
-    yColl(i) = 0;
-    objkinenergy(i) = 0;
+    
+    position(:,i) = [(r+h(i))*cos(angle(i)); (r+h(i))*sin(angle(i)); 0];
+    velocity(:,i) = [-v_0(i)*sin(angle(i)); v_0(i)*cos(angle(i)); 0];
+    objMass(i) = (10^(2.51*log(objSize(i)*2)+1.93))*10^-3;
 end
+clear inverted h angle;
 
 % Particle data (p)
-%| 1:id | 2:x | 3:y | 4:GM | 5:v_x |6:v_y | 7:vi | 8:rh | 9:v_0 | 10:tid |
-%11:objsize % | 12: objm | 13: Collision counters | 14: coll X | 15: Coll Y |
-values = [id;x;y;GM;v;angle;rh;v_0;tid;objsize;objm;collided;xColl;yColl;objkinenergy];
+%| 1: id | 2: x | 3: y | 4: z | 5: vel x |6: vel y | 7: vel z | 8: acceleration x | 9: acceleration y | 10: acceleration z | 11: v_0 | 12: objSize | 13: objMass |
+%14: kineticEnergy % | 15: collisionCounter | 16: collisionPos x | 17: collisionPos y | 18: collisionPos z | 19: rh |
+values = [id;position;velocity;acceleration;v_0;objSize;objMass;kineticEnergy;collisionCounter;collisionPos;rh;];
 p = values;
+clear id position velocity v_0 objSize objMass kineticEnergy collisionCounter collisionPos time rh values;
 
 % Simulation
-[ttable, xtable, ytable,p] = Simulation(n,p,t_end,dt,r,live_simulation);
+[ttable, xtable, ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M);
+clear live_simulation n dt r G M;
 
 % Clear variables from workspace
-clearvars id dt G v h G M GM tid pv v_x v_y v_0 r rh t x y values inverted angle i n objsize collided distance xColl yColl; 
-clear;
+clear i;
+%clear;
