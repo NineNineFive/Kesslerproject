@@ -5,8 +5,8 @@ clear
 live_simulation = true;
 
 % Simulation settings
-partikel_antal = 50; % Particle quantity
-t_end = 100; % Simulation seconds
+partikel_antal = 4; % Particle quantity
+t_end = 1000; % Simulation seconds
 dt = 1; % Time-step
 n = ceil(t_end/dt); % Number of steps simulation has to run
 
@@ -28,8 +28,9 @@ objMass = zeros(1,partikel_antal);
 collisionCounter = zeros(1,partikel_antal); % Count of collision
 collisionPos = ones(3,partikel_antal); % Last collision x,y,z
 rh = r+h;
+cantCollideTimer = ones(1,partikel_antal);
+disabled = zeros(1,partikel_antal);
 
-nocollisionsplz = zeros(1,partikel_antal);
 % Set some of the particle parameters
 for i=1:1:partikel_antal
     id(i) = i;
@@ -51,9 +52,9 @@ clear inverted h angle;
 % Particle data (p)
 %| 1: id | 2: x | 3: y | 4: z | 5: vel x |6: vel y | 7: vel z | 8:
 %acceleration x | 9: acceleration y | 10: acceleration z | 11: v_0 | 12:
-%objSize | 13: objMass | 14: nocollisionsplz |
+%objSize | 13: objMass | 14: cantCollideTimer | 15: disabled |
 
-values = [id;position;velocity;acceleration;v_0;objSize;objMass;nocollisionsplz;];
+values = [id;position;velocity;acceleration;v_0;objSize;objMass;cantCollideTimer;disabled;];
 p = values;
 clear id position velocity v_0 objSize objMass kineticEnergy collisionCounter collisionPos time rh values nocollisionsplz;
 
