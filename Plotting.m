@@ -8,7 +8,7 @@ function [] = Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t)
         text(p(2,:),p(3,:),"P"+p(1,:));
         
         axis equal;
-        axis([-7000000 7000000 -7000000 7000000])
+        %axis([-17000000 17000000 -17000000 17000000])
         grid on;
         xlabel('X position');
         ylabel('Y position');

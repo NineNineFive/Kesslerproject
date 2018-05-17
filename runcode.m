@@ -5,7 +5,7 @@ clear
 live_simulation = true;
 
 % Simulation settings
-partikel_antal = 20; % Particle quantity
+partikel_antal = 8; % Particle quantity
 t_end = 5269; % Simulation seconds
 dt = 1; % Time-step
 n = ceil(t_end/dt); % Number of steps simulation has to run
@@ -20,7 +20,7 @@ position = zeros(3,partikel_antal); % Position: x,y,z
 velocity = zeros(3,partikel_antal); % velocity: x,y,z
 acceleration = zeros(3,partikel_antal); % acceleration x,y,z
 v_0 = zeros(1,partikel_antal); % for velocity calculation
-h = randi([200900,201000],1,partikel_antal); % Random height in meters
+h = randi([201000,201000],1,partikel_antal); % Random height in meters
 objSize = randi([1,15],1,partikel_antal); % Random radius size in meters
 angle = deg2rad(randi([1 360],1,partikel_antal)); % Random angle from earth
 inverted = randi([0,1],1,partikel_antal); % Random inverted direction

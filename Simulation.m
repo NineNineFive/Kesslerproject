@@ -29,6 +29,20 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
                     if((norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < p(12,i) + p(12,j))
                         % MakeCollision between particles
                         [new_pos, new_vel, new_mass] = MakeCollision(p(2:3,i), p(2:3,j), p(5:6,i), p(5:6,j), p(13,i), p(13,j));
+                        
+                        newParticle = 1;
+                        disp(new_vel(newParticle,:).');
+                        p(:,i) = [p(1,i);new_pos;0;new_vel(newParticle,:).';0;p(8:9,i);0;p(11,i);p(12,i);p(13,i);new_mass(newParticle,:).';0;[0;0;0];p(19,i);];
+                        newParticle = 2;
+                        p(:,j) = [p(1,j);new_pos;0;new_vel(newParticle,:).';0;p(8:9,j);0;p(11,j);p(12,j);p(13,j);new_mass(newParticle,:).';0;[0;0;0];p(19,j);];
+                        % new particle
+                        p_new = zeros(size(new_mass,1)-2,1);
+                        %for newParticle = 3:i:size(new_mass)
+                        %    p_new(newParticle) = [size(p,2)+newParticle-2;new_pos;0;new_vel(newParticle,:).';0;p(8:9,i);0;p(11,i);p(12,i);p(13,i);new_mass(newParticle,:).';0;[0;0;0];p(19,i);];
+                        %end
+                        
+                        %p = p + p_new;
+
                     end
                 end
             end
