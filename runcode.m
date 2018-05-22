@@ -5,8 +5,8 @@ clear
 live_simulation = true;
 
 % Simulation settings
-partikel_antal = 10; % Particle quantity
-t_end = 1000; % Simulation seconds
+partikel_antal = 2; % Particle quantity
+t_end = 5000; % Simulation seconds
 dt = 1; % Time-step
 n = ceil(t_end/dt); % Number of steps simulation has to run
 

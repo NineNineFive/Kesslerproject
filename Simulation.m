@@ -16,23 +16,29 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
     for n=1:1:n
         t = t + dt;   % Update the time
         
-        if p(15,:)~=1
-            if sqrt(sum((p(2:3,:) - [0;0]) .^ 2))<r
-            %if norm(p(2:3,:)-[0;0])<r
-                disp("test");
-                p(15,:) = 1;
-                break;
-            end
-            p(8:9,:) = -GM.*(p(2:3,:)./((p(2,:).^2+p(3,:).^2).^1.5)); % Calculate the acceleration  
-            p(5:6,:) = p(5:6,:) + p(8:9,:)*dt; % Update the velocity with acceleration
-            p(2:3,:) = p(2:3,:) + p(5:6,:)*dt; % Update the position with velocity
+        %sqrt(sum((p(2:3,:)) .^ 2))<r)))~=0
+        %autist =  p(15,find(sqrt(sum((p(2:3,:)) .^ 2))<r~=1));
+        p(15,find(sqrt(sum((p(2:3,:)) .^ 2))<r~=1))=1
+        p(15,find());
+        %% so close
+        
+        %if norm(p(2:3,:)-[0;0])<r
 
-            p(14,:) = p(14,:)-dt;
+%        p(15,sqrt(sum((p(2:3,:) - [0;0]) .^ 2))<r) = 1;
+            
+        
+        %if norm(p(2:3,:)-[0;0])<r
+            
+        p(8:9,autist) = -GM.*(p(2:3,autist)./((p(2,autist).^2+p(3,autist).^2).^1.5)); % Calculate the acceleration  
+        p(5:6,autist) = p(5:6,autist) + p(8:9,autist)*dt; % Update the velocity with acceleration
+        p(2:3,autist) = p(2:3,autist) + p(5:6,autist)*dt; % Update the position with velocity
+
+        p(14,autist) = p(14,autist)-dt;
 
             % Collisions
             for i=1:1:size(p,2) % Particle 1
                 for j=1:1:size(p,2) % Particle 2
-                    if(i~=j)
+                    if(i~=j && p(15,i)~=1 && p(15,j)~=1)
                         % Calculation for the 'if collision can happens'
                         pji = p(2:3,j)-p(2:3,i);
                         vij = p(5:6,j)-p(5:6,i);
@@ -93,7 +99,7 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
                 Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos);
             end
         end
-    end
+
 
     % not live plotting
     if(live_simulation==false)
