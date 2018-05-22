@@ -1,11 +1,44 @@
 function [pos_new, vel_new, mass_new] = MakeCollision (pos1, pos2, vel1, vel2, m1, m2)
-    impuls = [m1*vel1 ; m2*vel2];   %impuls p = m*v
-
+    impuls1 = [m1*vel1];   %impuls1 p = m*v
+    impuls2 = [m2*vel2];   %impuls2 p = m*v
     % Center of mass 
     cm = (m1*pos1+m2*pos2)/(m1+m2); 
 
     % Velocity i Center of mass 
-    vcm = sum(impuls)/(m1+m2); % Velocity - Center of Mass
+   % ---> %vcm = sum(impuls1)+sum(impuls2)/(m1+m2); % Velocity - Center of Mass
+    %% vi skal have 2 dimensioner ind, men har kun 1, i need help!
+
+    disp("Pos1");
+    disp(pos1);
+    disp("Pos2");
+    disp(pos2);
+    
+    disp("vel1");
+    disp(vel1);
+    
+    disp("vel2");
+    disp(vel2);
+    
+    disp("m1");
+    disp(m1);
+    
+    disp("m2");
+    disp(m2);
+    
+    disp("cm");
+    disp(cm);
+    
+    disp("impuls");
+    disp(impuls1);
+    
+    disp("sum of impuls1");
+    disp(sum(impuls1));
+    
+    disp("sum of impuls2");
+    disp(sum(impuls2));
+    
+    disp("vcm");
+    disp(vcm);
     
     % frame
     vel1 = vel1 - vcm; % 1x2= 1x2 - 1x2
