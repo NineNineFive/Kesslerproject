@@ -9,6 +9,8 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
     collisionCounter = 0;
     collisionPos = [];
     
+    startedSim = 0;
+    
     % Start the simulation at the initial contitions.
     t = 0; % Start time
     GM = G*M; % gravitition constant and the earth's mass
@@ -18,9 +20,12 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
         
         %sqrt(sum((p(2:3,:)) .^ 2))<r)))~=0
         %autist =  p(15,find(sqrt(sum((p(2:3,:)) .^ 2))<r~=1));
-        p(15,find(sqrt(sum((p(2:3,:)) .^ 2))<r~=1))=1
-        p(15,find());
-        %% so close
+        p(15,find(sqrt(sum((p(2:3,:)) .^ 2))<r)) = 1;
+        activeParticles = find(p(15,:)==0);
+        inactiveParticles = find(p(15,:)==1);
+        
+        %p(15,find(sqrt(sum((p(2:3,:)) .^ 2))<r))=1
+        %p(15,find());
         
         %if norm(p(2:3,:)-[0;0])<r
 
@@ -29,15 +34,15 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
         
         %if norm(p(2:3,:)-[0;0])<r
             
-        p(8:9,autist) = -GM.*(p(2:3,autist)./((p(2,autist).^2+p(3,autist).^2).^1.5)); % Calculate the acceleration  
-        p(5:6,autist) = p(5:6,autist) + p(8:9,autist)*dt; % Update the velocity with acceleration
-        p(2:3,autist) = p(2:3,autist) + p(5:6,autist)*dt; % Update the position with velocity
+        p(8:9,activeParticles) = -GM.*(p(2:3,activeParticles)./((p(2,activeParticles).^2+p(3,activeParticles).^2).^1.5)); % Calculate the acceleration  
+        p(5:6,activeParticles) = p(5:6,activeParticles) + p(8:9,activeParticles)*dt; % Update the velocity with acceleration
+        p(2:3,activeParticles) = p(2:3,activeParticles) + p(5:6,activeParticles)*dt; % Update the position with velocity
 
-        p(14,autist) = p(14,autist)-dt;
+        p(14,activeParticles) = p(14,activeParticles)-dt;
 
             % Collisions
             for i=1:1:size(p,2) % Particle 1
-                for j=1:1:size(p,2) % Particle 2
+                for j=i+1:1:size(p,2) % Particle 2
                     if(i~=j && p(15,i)~=1 && p(15,j)~=1)
                         % Calculation for the 'if collision can happens'
                         pji = p(2:3,j)-p(2:3,i);
@@ -94,15 +99,23 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
                 ytable(i, n) = p(3,i);
             end
 
+            % Plotting settings
+            figure(1);
+            if(startedSim==1)
             % live plotting
-            if live_simulation==true && mod(n,4)==0
-                Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos);
+            if live_simulation==true && mod(n,7)==0
+                Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveParticles);
+            end
+            else
+               title("Press Spacebar To Start Simulation");
+               pause;
+               startedSim = 1;
             end
         end
 
 
     % not live plotting
     if(live_simulation==false)
-        Plotting(p,ttable,xtable,ytable,r,n,live_simulation,t,collisionCounter,collisionPos);
+        Plotting(p,ttable,xtable,ytable,r,n,live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveParticles);
     end
 end
