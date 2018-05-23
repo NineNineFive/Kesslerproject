@@ -17,22 +17,11 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
 
     for n=1:1:n
         t = t + dt;   % Update the time
-        
-        %sqrt(sum((p(2:3,:)) .^ 2))<r)))~=0
-        %autist =  p(15,find(sqrt(sum((p(2:3,:)) .^ 2))<r~=1));
+
         p(15,find(sqrt(sum((p(2:3,:)) .^ 2))<r)) = 1;
         activeParticles = find(p(15,:)==0);
         inactiveParticles = find(p(15,:)==1);
         
-        %p(15,find(sqrt(sum((p(2:3,:)) .^ 2))<r))=1
-        %p(15,find());
-        
-        %if norm(p(2:3,:)-[0;0])<r
-
-%        p(15,sqrt(sum((p(2:3,:) - [0;0]) .^ 2))<r) = 1;
-            
-        
-        %if norm(p(2:3,:)-[0;0])<r
             
         p(8:9,activeParticles) = -GM.*(p(2:3,activeParticles)./((p(2,activeParticles).^2+p(3,activeParticles).^2).^1.5)); % Calculate the acceleration  
         p(5:6,activeParticles) = p(5:6,activeParticles) + p(8:9,activeParticles)*dt; % Update the velocity with acceleration
@@ -56,9 +45,14 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
                             % MakeCollision between particles
                             [pos_new, vel_new, mass_new] = MakeCollision(p(2:3,i), p(2:3,j), p(5:6,i), p(5:6,j), p(13,i), p(13,j));
 
+                            xtable(size(xtable)+1:size(xtable)+10, 1:n) = pos_new(1);
+                            ytable(size(ytable)+1:size(ytable)+10, 1:n) = pos_new(2);
+                            
                             collisionPos = [collisionPos, pos_new];
                             collisionCounter = collisionCounter+1;
 
+                            
+                            
                             for p_i = 1:1:size(mass_new,1)
                                 cantColTimer_new = 2;
                                 if p_i==1
@@ -94,16 +88,18 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
 
             % the particle's travel data
             for i=1:1:size(p,2)
-                ttable(i, n) = n;
-                xtable(i, n) = p(2,i);
-                ytable(i, n) = p(3,i);
+                if(p(2,i)~=0&&p(3,i)~=0)
+                    ttable(i, n) = n;
+                    xtable(i, n) = p(2,i);
+                    ytable(i, n) = p(3,i);
+                end
             end
 
             % Plotting settings
             figure(1);
             if(startedSim==1)
             % live plotting
-            if live_simulation==true && mod(n,7)==0
+            if live_simulation==true && mod(n,15)==0
                 Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveParticles);
             end
             else
