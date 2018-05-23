@@ -1,10 +1,10 @@
 % pos is p(2:3,:); % dimensions of pos (2D)
 % vel is p(5:6,:); % dimensions of vel (2D)
 % acc is p(8:9,:); % dimensions of acc (2D)
-function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
+function [xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M,simHeight,start_partikel_antal)
     
     % Initalize empty tables
-    [ttable,xtable,ytable] = deal(zeros(size(p,2),n));
+    [xtable,ytable] = deal(zeros(size(p,2),n));
 
     collisionCounter = 0;
     collisionPos = [];
@@ -19,8 +19,9 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
         t = t + dt;   % Update the time
 
         p(15,find(sqrt(sum((p(2:3,:)) .^ 2))<r)) = 1;
-        activeParticles = find(p(15,:)==0);
-        inactiveParticles = find(p(15,:)==1);
+        activeParticles = find(p(15,:)==0&p(16,:)==0);
+        inactiveEarthParticles = find(p(15,:)==1);
+        inactiveSpaceParticles = find(p(16,:)==1);
         
             
         p(8:9,activeParticles) = -GM.*(p(2:3,activeParticles)./((p(2,activeParticles).^2+p(3,activeParticles).^2).^1.5)); % Calculate the acceleration  
@@ -29,6 +30,7 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
 
         p(14,activeParticles) = p(14,activeParticles)-dt;
 
+        %% Note til mig selv: prøv at lav en find på p, for at begrænse antallet af collisions der tjekkes for
             % Collisions
             for i=1:1:size(p,2) % Particle 1
                 for j=i+1:1:size(p,2) % Particle 2
@@ -74,7 +76,7 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
                                     v_0_new = 0;
                                     objSize_new = 1;
                                     objMass_new = mass_new(p_i,:).';
-                                    values_new = [id_new;pos_new;0;vel_new(p_i,:).';0;[0;0;0];v_0_new;objSize_new;objMass_new;cantColTimer_new;0];
+                                    values_new = [id_new;pos_new;0;vel_new(p_i,:).';0;[0;0;0];v_0_new;objSize_new;objMass_new;cantColTimer_new;0;0;0];
                                     p_new = values_new;
                                     p = [p, p_new];
                                 end         
@@ -89,7 +91,6 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
             % the particle's travel data
             for i=1:1:size(p,2)
                 if(p(2,i)~=0&&p(3,i)~=0)
-                    ttable(i, n) = n;
                     xtable(i, n) = p(2,i);
                     ytable(i, n) = p(3,i);
                 end
@@ -100,7 +101,7 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
             if(startedSim==1)
             % live plotting
             if live_simulation==true && mod(n,15)==0
-                Plotting(p,ttable,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveParticles);
+                Plotting(p,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,simHeight,start_partikel_antal);
             end
             else
                title("Press Spacebar To Start Simulation");
@@ -112,6 +113,6 @@ function [ttable,xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M)
 
     % not live plotting
     if(live_simulation==false)
-        Plotting(p,ttable,xtable,ytable,r,n,live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveParticles);
+        Plotting(p,xtable,ytable,r,n,live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,simHeight,start_partikel_antal);
     end
 end

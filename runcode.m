@@ -5,8 +5,8 @@ clear
 live_simulation = false;
 
 % Simulation settings
-partikel_antal = 20; % Particle quantity
-t_end = 18000; % Simulation seconds
+start_partikel_antal = 16; % Particle quantity
+t_end = 1500; % Simulation seconds
 dt = 1; % Time-step 
 n = ceil(t_end/dt); % Number of steps simulation has to run
 
@@ -14,25 +14,31 @@ r = 6.378e6; % Orbits radius from earth
 G = 6.67e-11; % Graviation constant
 M = 5.98e24; % The Earths Mass
 
+
+% Random seed
+rng(0);
+
 % Particle Start Parameters 
-id = zeros(1,partikel_antal);
-position = zeros(3,partikel_antal); % Position: x,y,z
-velocity = zeros(3,partikel_antal); % velocity: x,y,z
-acceleration = zeros(3,partikel_antal); % acceleration x,y,z
-v_0 = zeros(1,partikel_antal); % for velocity calculation
-h = randi([200000,201000],1,partikel_antal); % Random height in meters
-objSize = randi([1,15],1,partikel_antal); % Random radius size in meters
-angle = deg2rad(randi([1 360],1,partikel_antal)); % Random angle from earth
-inverted = randi([0,1],1,partikel_antal); % Random inverted direction
-objMass = zeros(1,partikel_antal);
-collisionCounter = zeros(1,partikel_antal); % Count of collision
-collisionPos = ones(3,partikel_antal); % Last collision x,y,z
+id = zeros(1,start_partikel_antal);
+position = zeros(3,start_partikel_antal); % Position: x,y,z
+velocity = zeros(3,start_partikel_antal); % velocity: x,y,z
+acceleration = zeros(3,start_partikel_antal); % acceleration x,y,z
+v_0 = zeros(1,start_partikel_antal); % for velocity calculation
+simHeight = [200000;201000];
+h = randi([simHeight(1),simHeight(2)],1,start_partikel_antal); % Random height in meters
+objSize = randi([1,15],1,start_partikel_antal); % Random radius size in meters
+angle = deg2rad(randi([1 360],1,start_partikel_antal)); % Random angle from earth
+inverted = randi([0,1],1,start_partikel_antal); % Random inverted direction
+objMass = zeros(1,start_partikel_antal);
+collisionCounter = zeros(1,start_partikel_antal); % Count of collision
+collisionPos = ones(3,start_partikel_antal); % Last collision x,y,z
 rh = r+h;
-cantCollideTimer = ones(1,partikel_antal);
-disabled = zeros(1,partikel_antal);
+cantCollideTimer = ones(1,start_partikel_antal);
+inactiveEarth = zeros(1,start_partikel_antal);
+inactiveSpace = zeros(1,start_partikel_antal);
 
 % Set some of the particle parameters
-for i=1:1:partikel_antal
+for i=1:1:start_partikel_antal
     id(i) = i;
     
     if(inverted(i)==1) 
@@ -54,15 +60,17 @@ clear inverted h angle;
 %acceleration x | 9: acceleration y | 10: acceleration z | 11: v_0 | 12:
 %objSize | 13: objMass | 14: cantCollideTimer | 15: disabled |
 
-values = [id;position;velocity;acceleration;v_0;objSize;objMass;cantCollideTimer;disabled;];
+values = [id;position;velocity;acceleration;v_0;objSize;objMass;cantCollideTimer;inactiveEarth;inactiveSpace;rh];
 p = values;
-clear id position velocity v_0 objSize objMass kineticEnergy collisionCounter collisionPos time rh values nocollisionsplz;
+clear id position acceleration velocity v_0 objSize objMass kineticEnergy collisionCounter collisionPos cantCollideTimer inactiveEarth inactiveSpace time rh values;
 
+% Saving the Startparameters
+pStart = p;
 
 % Simulation
-[ttable, xtable, ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M);
-clear live_simulation n dt r G M;
+[xtable, ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M,simHeight,start_partikel_antal);
+clear live_simulation n dt r G M simHeight;
 
 % Clear variables from workspace
-clear i;
+clear i ;
 %clear;
