@@ -1,0 +1,54 @@
+200000 til 210000 højde
+60 partikler
+6000 simuleringssekunder
+116 sekunder ( 1 minut 56 sekunder)
+results: 4 kollisioner, 56 aktive
+
+(10 dt edition)
+200000 til 210000 højde
+60 partikler
+6000 simuleringssekunder
+20 sekunder
+results: 4 kollisioner, 56 aktive
+
+200000 til 210000 højde
+60 partikler
+12000 simuleringssekunder
+200 sekunder (3 minutter 20 sekunder)
+results: 4 kollisioner, 53 aktive
+
+
+200000 til 210000 højde
+60 partikler
+36000 simuleringssekunder (10 timer)
+535 sekunder (8 minutter 55 sekunder)
+results: 4 kollisioner, 53 aktive
+
+
+(10 dt edition)
+200000 til 210000 højde
+60 partikler
+36000 simuleringssekunder (10 timer)
+64 sekunder (1 minut 4 sekunder)
+results: 4 kollisioner, 53 aktive
+
+
+(20 dt edition) (utilregnelig kollisioner ift resten!)
+200000 til 210000 højde
+60 partikler
+36000 simuleringssekunder (10 timer)
+33 sekunder
+results: 7 kollisioner, 47 aktive
+
+
+200000 til 210000 højde
+60 partikler
+86400 simuleringssekunder (1 dag)
+1194 sekunder (19 minutter 54 sekunder)
+results: 4 kollisioner, 53 aktive
+
+200000 til 210000 højde
+30 partikler
+36000 simuleringssekunder
+165 sekunder (2 minutter 45 sekunder)
+results: 1 kollisioner, 28 aktive

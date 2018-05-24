@@ -1,66 +1,57 @@
-function [] = Plotting(p,ttable,xtable,ytable,r,n, live_simulation)
+function [] = Plotting(p,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,simHeight,start_partikel_antal)
     if(live_simulation==true)
         % Plotting
-        figure(2);
-
         hold off
-        plot(p(2,:), p(3,:), '.'); % particles current position
-        text(p(2,:),p(3,:),"P"+p(1,:));
-        
+        plot(p(2,activeParticles), p(3,activeParticles), '.'); % particles current position
+        text(p(2,activeParticles),p(3,activeParticles),"P"+p(1,activeParticles),'FontSize', 8,'horizontalAlignment', 'center','verticalAlignment', 'bottom');
         axis equal;
-        axis([-7000000 7000000 -7000000 7000000])
+        axis([-10000000 10000000 -10000000 10000000])
         grid on;
+        grid minor;
+        title("Simulation: Højde mellem "+simHeight(1)+" og "+simHeight(2)+" meters højde fra jorden");
         xlabel('X position');
         ylabel('Y position');
         hold on;
         for i=1:1:size(p,2)
-            if p(14,i)~=0&&p(15,i)~=0
-                plot(p(14,i), p(15,i),'X');
+            if collisionCounter>0
+                plot(collisionPos(1,:), collisionPos(2,:),'X');
+                plot(p(2,inactiveEarthParticles), p(3,inactiveEarthParticles), '*'); % (Earth)
+                plot(p(2,inactiveSpaceParticles), p(3,inactiveSpaceParticles), '*'); % (Space)
             end
         end
-
-        earth = viscircles([0 0],r,'Color',[0 0.4 0]); % The earth
-        %for i=1:1:size
-        %colls = 
-        colls = 0;
-        for i=1:1:size(p,2)
-            colls = colls+p(13,i);
-        end
-        text(0,900000,"Tidsskridt kørt: "+ n);
-        text(0,300000,"Kollisioner *8 = "+ colls);
-        text(0,-300000,"antal partikler = "+ size(p,2));
-        %plot(xtable(:,n),ytable(:,n)); % Particles travel in orbit
+        viscircles([0 0],r,'Color',[0 0.1 0]); % The earth
+        text(0,2100000,"Tidsskridt Kørt: "+ t,'FontSize',10,'horizontalAlignment', 'center');
+        text(0,1400000,"Kollisioner = "+ collisionCounter,'FontSize',10,'horizontalAlignment', 'center');
+        text(0,700000,"Start Antal Partikler = "+ start_partikel_antal,'FontSize',10,'horizontalAlignment', 'center');
+        text(0,0,"Aktive Partikler = "+ size(activeParticles,2),'FontSize',10,'horizontalAlignment', 'center');
+        text(0,-700000,"Partikler på jorden = "+ size(inactiveEarthParticles,2),'FontSize',10,'horizontalAlignment', 'center');
+        text(0,-1400000,"Partikler udenfor Sim = "+ size(inactiveSpaceParticles,2),'FontSize',10,'horizontalAlignment', 'center');
     else
-    % Plotting
-    figure(2);
-    axis equal;
-    axis([-7000000 7000000 -7000000 7000000])
-    grid on;     
-    hold on;
-    xlabel('X position');
-    ylabel('Y position');
-    earth = viscircles([0 0],r,'Color',[0 0.4 0]); % The earth
-    for i = 1:1:size(p,2)
-        plot(p(2,:), p(3,:), '.'); % particles current position
-        text(p(2,:),p(3,:),"P"+p(1,:));
-        
-        plot(xtable(i,:),ytable(i,:)); % Particles travel in orbit
-        if p(14,i)~=0&&p(15,i)~=0
-            plot(p(14,i), p(15,i),'X');
+        % Plotting
+        hold on;
+        axis equal;
+        grid on;
+        grid minor;
+        title("Simulation: Højde mellem "+simHeight(1)+" og "+simHeight(2)+" meters højde fra jorden");
+        xlabel('X position');
+        ylabel('Y position');
+        viscircles([0 0],r,'Color',[0 0.1 0]); % The earth
+        for i = 1:1:size(p,2)
+            plot(p(2,activeParticles), p(3,activeParticles), '.'); % particles current position
+            plot(p(2,inactiveEarthParticles), p(3,inactiveEarthParticles), '*'); % (Earth)
+            plot(p(2,inactiveSpaceParticles), p(3,inactiveSpaceParticles), '*'); % (Space)
+            text(p(2,activeParticles),p(3,activeParticles),"P"+p(1,activeParticles),'FontSize', 8,'horizontalAlignment', 'center','verticalAlignment', 'bottom');
+
+            plot(xtable(i,:),ytable(i,:),'-'); % Particles travel in orbit
+            if collisionCounter>0
+                plot(collisionPos(1,:), collisionPos(2,:),'X');
+            end
         end
-    end
-    colls = 0;
-    for i=1:1:size(p,2)
-        colls = colls+p(13,i);
-    end
-    text(0,900000,"Tidsskridt kørt: "+ n);
-    text(0,300000,"Kollisioner *8 = "+ colls);
-    text(0,-300000,"antal partikler = "+ size(p,2));
+        text(0,2100000,"Tidsskridt Kørt: "+ t,'FontSize',10,'horizontalAlignment', 'center');
+        text(0,1400000,"Kollisioner = "+ collisionCounter,'FontSize',10,'horizontalAlignment', 'center');
+        text(0,700000,"Start Antal Partikler = "+ start_partikel_antal,'FontSize',10,'horizontalAlignment', 'center');
+        text(0,0,"Aktive Partikler = "+ size(activeParticles,2),'FontSize',10,'horizontalAlignment', 'center');
+        text(0,-700000,"Partikler på jorden = "+ size(inactiveEarthParticles,2),'FontSize',10,'horizontalAlignment', 'center');
+        text(0,-1400000,"Partikler udenfor Sim = "+ size(inactiveSpaceParticles,2),'FontSize',10,'horizontalAlignment', 'center');
     end
 end
-
-
-% not live function of plot
-% function [] = Plotting(p,ttable,xtable,ytable,r,n)
-
-% end

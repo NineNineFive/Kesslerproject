@@ -1,179 +1,115 @@
-function [ttable,xtable,ytable,p] = Simulation(n,p,t_end,dt,r,live_simulation)
+% pos is p(2:3,:); % dimensions of pos (2D)
+% vel is p(5:6,:); % dimensions of vel (2D)
+% acc is p(8:9,:); % dimensions of acc (2D)
+function [xtable,ytable,p] = Simulation(live_simulation,p,n,dt,r,G,M,simHeight,start_partikel_antal)
+    
+    % Initalize empty tables
+    [xtable,ytable] = deal(zeros(size(p,2),n));
 
-% Initalize empty tables
-[ttable,xtable,ytable] = deal(zeros(size(p,2),n));
-
-     % Start the simulation at the initial contitions.
-     t = 0;
-     GM = p(4,:);
-     x = p(2,:); % x_0
-     y = p(3,:); % y_0
-     v_x = p(5,:);
-     v_y = p(6,:);
+    collisionCounter = 0;
+    collisionPos = [];
+    
+    startedSim = 0;
+    
+    % Start the simulation at the initial contitions.
+    t = 0; % Start time
+    GM = G*M; % gravitition constant and the earth's mass
 
     for n=1:1:n
-         t = t + dt;   % Update the time
-         
-         % Calculate acceleration on a mass attached to spring
-         a_x = -GM.*(p(2,:)./((p(2,:).^2+p(3,:).^2).^1.5));      
-         a_y = -GM.*(p(3,:)./((p(2,:).^2+p(3,:).^2).^1.5));  
-         
-         % Update the velocity
-         v_x = p(5,:) + a_x.*dt; 
-         v_y = p(6,:) + a_y.*dt;
-         v = [v_x;v_y];
-         
-         % Update the position calculation
-         x = p(2,:) + p(5,:)*dt;
-         y = p(3,:) + p(6,:)*dt;         
-         
-         % Update particle data
-         p(2,:) = x;
-         p(3,:) = y;
-         p(10,:) = t;
-         p(5,:) = v_x;
-         p(6,:) = v_y;
-         
-         % Collisions
-             for i=1:1:size(p,2) % Particle 1
-                for j=1:1:size(p,2) % Particle 2
-                     if(i~=j)
-                        % parallel
-                        pji = p(2:3,j)-p(2:3,i);
-                        vij = p(5:6,j)-p(5:6,i);
-                        % pjiparallel = (dot((p(2:3,j)-p(2:3,i)), p(5:6,j)-p(5:6,j))*p(5:6,j)-p(5:6,j))/(norm(p(5:6,j)-p(5:6,j)).^2);
-                        pjiparallel = (dot(pji, vij)*vij)/(norm(vij).^2);
-                        
-                        % vinkelret
-                        
-                        pjivinkelret = pji - pjiparallel;
-                        
-                        % then - if((norm(Pijparallel)<norm(vij)*dt)&&norm(pjivinkelret)<p(11,i) + p(11,j))
-                        if((norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < p(11,i) + p(11,j))
-                            % Partikel 1
-                            p(13,i) = p(13,i)+1; % is 1 if collision happened and is recorded in the particles data
-                            p(14,i) = p(2,i);
-                            p(15,i) = p(3,i);   
-                            
-                            impuls = p(12,i)*[p(5,i);p(6,i)];   %impuls p = m*v
-                            p(16,i) = 1/2*p(12,i)*( norm([p(5,i);p(6,i)]) )^2; % Formlen for energi: 1/2*objMasse*(velocity)^2
-                            
-                                
-                            % Partikel 2
-                            p(13,j) = p(13,j)+1; % is 1 if collision happened and is recorded in the particles data
-                            p(14,j) = p(2,j);
-                            p(15,j) = p(3,j);
-                            
-                            impuls2 = p(12,j)*[p(5,j);p(6,j)];
-                            p(16,j) = 1/2*p(12,j)*( norm([p(5,j);p(6,j)]) )^2; % Formlen for energi: 1/2*objMasse*(velocity)^2
-                            
-                            
-                            % Center of mass frame
-                            vcm = (impuls+impuls2)/(p(12,i)+p(12,j)); % Velocity - Center of Mass
-                            
-                            % CM frame 
-                            vel1indframe = [p(5,i);p(6,i)] - vcm;      %vel1indframe = vel1 - vcm; 
-                            vel2indframe = [p(5,j);p(6,j)] - vcm; 
-                            
-                            % Energi (ikke bevaret)
-                            
-                            k_ind1 = (1/2)*p(12,i)*norm([p(5,i);p(6,i)])^2;
-                            k_ind2 = (1/2)*p(12,j)*norm([p(5,j);p(6,j)])^2;
-                            
-                            %energisum = p(16,i)+p(16,j);
-                            %energiud = energisum*(0.9);
-                            
-                            k_ud1 = (k_ind1)*0.9;
-                            k_ud2 = (k_ind2)*0.9;
-                            k_0 = (k_ud1+k_ud2);
-                            
-                           
-                            % Kollision i frame 
-                            vel1udframe = -vel1indframe;
-                            vel2udframe = -vel2indframe;
-                            
-                            % Frame kredsløb 
-                            vel1ud = vel1udframe + vcm; 
-                            vel2ud = vel2udframe + vcm; 
-                            
-                            
-                            %sqrt(k_ind1)*[p(5,i);p(6,i)]
-                            
-                            % Set new velocity for existing particles
-                            p(5,i) = -p(5,i);
-                            p(6,i) = -p(6,i);
-                            p(5,j) = -p(5,j);
-                            p(6,j) = -p(6,j);
-                            
-%                             % Create new particles
-%                             antalnyepartikler = 2;
-%                             
-%                             
-%                             r_ = 6.378e6; % Orbits radius from earth
-%                             G_ = 6.67e-11; % Graviation constant
-%                             M_ = 5.98e24; % Mass
-%                             
-%                             for a=1:1:antalnyepartikler
-%                                 id_(a) = a;
-%                                 tid_(a) = a;
-%                                 h_ = randi([200000,200000],1,1); %højde i meter
-%                                 %if somestatement inverted = 0 else inverted = 1
-%                                 %if(inverted==1) v_0(a) = sqrt(G*M/(r+h));
-%                                 %else 
-%                                 v_0_(a) = -sqrt(G_*M_/(r_+h_));
-%                                 %end  
-%                                 x_(a) = p(2,i)-p(2,j);
-%                                 y_(a) = p(3,i)-p(3,j);
-%                                 v_x_(a) = p(5,i)-p(5,j); % V_x = -(V_0) * sin(vinkel)
-%                                 v_y_(a) = p(6,i)-p(6,j); % V_y = (V_0) * cos(vinkel)
-%                                 rh_(a) = r_+h_;
-%                                 GM_(a) = G_*M_;
-%                                 angle_(a) = 0;
-%                                 objsize_(a) = randi([1,15],1,1);
-%                                 objm_(a) = (10^(2.51*log(objsize_(a)*2)+1.93))*10^-3;
-%                                 distance_(a) = 0;
-%                                 collided_(a) = 0;
-%                                 xColl_(a) = 0;
-%                                 yColl_(a) = 0;
-%                                 objkinenergy_(a) = 0;
-%                             end
-%     
-%                                 
-%                             values_ = [id_;x_;y_;GM_;v_x_;v_y_;angle_;rh_;v_0_;tid_;objsize_;objm_;collided_;xColl_;yColl_;objkinenergy_];
-%                             p2 = values_;
-%                             disp(size(p));
-%                             disp(size(p2));
-%                             p=horzcat(p,p2);
-%                             GM = p(4,:);
-%                             x = p(2,:); % x_0
-%                             y = p(3,:); % y_0
-%                             v_x = p(5,:);
-%                             v_y = p(6,:);
+        t = t + dt;   % Update the time
+        p(17,:) = vecnorm(p(2:3,:)); % Update RH
+        
+        % Set Particles inactive
+        p(15,find(p(17,:)<r)) = 1;
+        p(16,find(p(17,:)>2*10^7)) = 1;
+        
+        % Select particles who are active or inactive into 3 variables
+        activeParticles = find(p(15,:)==0&p(16,:)==0);
+        inactiveEarthParticles = find(p(15,:)==1);
+        inactiveSpaceParticles = find(p(16,:)==1);
+        
+        % Update particles acc, vel and position
+        p(8:9,activeParticles) = -GM.*(p(2:3,activeParticles)./((p(2,activeParticles).^2+p(3,activeParticles).^2).^1.5)); % Calculate the acceleration  
+        p(5:6,activeParticles) = p(5:6,activeParticles) + p(8:9,activeParticles)*dt; % Update the velocity with acceleration
+        p(2:3,activeParticles) = p(2:3,activeParticles) + p(5:6,activeParticles)*dt; % Update the position with velocity
+        
+        % Update cantCollideTimer
+        p(14,activeParticles) = p(14,activeParticles)-dt; % To ensure collision detection runs without errors or forever-loops
 
-                         else
-                             %p(13,i) = false; %% is 0 if%collision didnt happen at all
-                             %p(12,i) = distance;  % Distance between the particles when they collided
-                         end
-                     end
+        % Collisions
+        for i=1:1:size(p(1,activeParticles),2) % Particle 1
+            for j=i+1:1:size(p(1,activeParticles),2) % Particle 2
+                if(i~=j && p(15,i)~=1 && p(15,j)~=1)
+                    % Calculation for the 'if collision can happens'
+                    pji = p(2:3,j)-p(2:3,i);
+                    vij = p(5:6,j)-p(5:6,i);
+                    pjiparallel = (dot(pji, vij)*vij)/(norm(vij).^2);
+                    pjivinkelret = pji - pjiparallel;
+
+                    if(p(15,i)~=1&&p(15,j)~=1&&p(14,i)<=0&&p(14,j)<=0&&(norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < (p(12,i) + p(12,j))&&(p(2,i)~=p(2,j)&&p(3,i)~=p(3,j)))
+                        % MakeCollision between particles
+                        [pos_new, vel_new, mass_new, size_new] = MakeCollision(p(2:3,i), p(2:3,j), p(5:6,i), p(5:6,j), p(13,i), p(13,j), p(12,i), p(12,j));
+
+                        xtable(size(xtable)+1:size(xtable)+10, 1:n) = pos_new(1);
+                        ytable(size(ytable)+1:size(ytable)+10, 1:n) = pos_new(2);
+
+                        collisionPos = [collisionPos, pos_new];
+                        collisionCounter = collisionCounter+1;
+
+                        for p_i = 1:1:size(mass_new,1)
+                            cantColTimer_new = 2*dt;
+                            if p_i==1
+                                p(2:3,i) = pos_new;
+                                p(5:6,i) = vel_new(p_i,:);
+                                p(12,i) = size_new(p_i,:);
+                                p(13,i) = mass_new(p_i,:);
+                                p(4,i) = 0;
+                                p(14,i) = cantColTimer_new;
+                            elseif p_i==2
+                                p(2:3,j) = pos_new;
+                                p(5:6,j) = vel_new(p_i,:);
+                                p(12,j) = size_new(p_i,:);
+                                p(13,j) = mass_new(p_i,:);
+                                p(4,j) = 0;
+                                p(14,j) = cantColTimer_new;
+                            else
+                                id_new = size(p,2)+1;
+                                v_0_new = 0;
+                                objSize_new = size_new(p_i,:);
+                                objMass_new = mass_new(p_i,:).';
+                                values_new = [id_new;pos_new;0;vel_new(p_i,:).';0;[0;0;0];v_0_new;objSize_new;objMass_new;cantColTimer_new;0;0;0];
+                                p_new = values_new;
+                                p = [p, p_new];
+                            end         
+                        end     
+                    end
                 end
-             end
+            end
+        end
 
-          
-         % the particle's travel data
-         for i=1:1:size(p,2)
-             ttable(i, n) = p(10,i);
-             xtable(i, n) = p(2,i);
-             ytable(i, n) = p(3,i);
-         end
-         
-         % live plotting
-         if live_simulation==true && mod(n,10)==0
-            Plotting(p,ttable,xtable,ytable,r,n, live_simulation);
-         end
+        % the particle's travel data
+        for i=1:1:size(p,2)
+            if(p(2,i)~=0&&p(3,i)~=0)
+                xtable(i, n) = p(2,i);
+                ytable(i, n) = p(3,i);
+            end
+        end
+
+        % Plotting settings
+        figure(1);
+        if(startedSim==1)
+            % live plotting
+            if live_simulation==true && mod(n,1)==0 % Edit this to change plotting speed
+                Plotting(p,xtable,ytable,r,n, live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,simHeight,start_partikel_antal);
+            end
+        else
+           title("Press Spacebar To Start Simulation");
+           pause;
+           startedSim = 1;
+        end
     end
-    
-    
     % not live plotting
     if(live_simulation==false)
-        Plotting(p,ttable,xtable,ytable,r,n,live_simulation);
+        Plotting(p,xtable,ytable,r,n,live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,simHeight,start_partikel_antal);
     end
+end
