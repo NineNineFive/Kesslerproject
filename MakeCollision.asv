@@ -13,7 +13,7 @@ function [pos_new, vel_new, mass_new, size_new] = MakeCollision (pos1, pos2, vel
 
     impuls_new = -1+(1+1).*rand(12,2); % min+(max-min).*(12x3 array from 0 to 1)
     average_impulse = sum(impuls_new)/12; %gennemsnit (1x3 array)
-    impuls_new = impuls_new - average_impulse;
+    impuls_new = impuls_new - average_impulse
     
     mass_new = [m1/3;m1/6;m1/6;m1/9;m1/9;m1/9;m2/3;m2/6;m2/6;m2/9;m2/9;m2/9];
     size_new = [size1/3;size1/6;size1/6;size1/9;size1/9;size1/9;size2/3;size2/6;size2/6;size2/9;size2/9;size2/9];
@@ -21,11 +21,11 @@ function [pos_new, vel_new, mass_new, size_new] = MakeCollision (pos1, pos2, vel
     
     % old kinetic energy
     k_old = 0.5 * [m1;m2] .* [norm(vel1).^2;norm(vel2).^2];
-    k_tot_old = sum(k_old);
+    k_tot_old = sum(k_old)
     
     % new kinetic energy
     k_new = 0.5 * mass_new .* norm(vel_new) .^ 2;
-    k_tot_new = sum(k_new);
+    k_tot_new = sum(k_new)
 
     % factor
     factor = sqrt(k_tot_old ./ k_tot_new);
@@ -34,10 +34,6 @@ function [pos_new, vel_new, mass_new, size_new] = MakeCollision (pos1, pos2, vel
     
     % De skal ud af frame
     vel_new = vel_new + repmat(vcm',[12,1]);
-        
-    
-    impuls_new = mass_new.*vel_new;   % Bevis for at der er impulsbevarelse
-    
-    
+
     pos_new = cm;
 end

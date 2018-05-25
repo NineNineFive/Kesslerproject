@@ -21,7 +21,7 @@ function [p] = Simulation(live_simulation,p,nsteps,dt,r,G,M,simHeight,start_part
         
         % Set Particles inactive
         p(15,find(p(17,:)<r)) = 1;
-        p(16,find(p(17,:)>3*10^7)) = 1;
+        p(16,find(p(17,:)>2*10^7)) = 1;
         
         % Select particles who are active or inactive into 3 variables
         activeParticles = find(p(15,:)==0&p(16,:)==0);
