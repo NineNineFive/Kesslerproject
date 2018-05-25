@@ -52,11 +52,6 @@ for i=1:1:start_partikel_antal
     position(:,i) = [(r+h(i))*cos(angle(i)); (r+h(i))*sin(angle(i)); 0];
     velocity(:,i) = [-v_0(i)*sin(angle(i)); v_0(i)*cos(angle(i)); 0];
     
-    %if (objSize(i) > 5)
-    %    objMass(i) = (10^(2.51*log(5*2)+1.93))*10^-3+objSize(i)*10;
-    %else
-    %    objMass(i) = (10^(2.51*log(objSize(i)*2)+1.93))*10^-3;
-    %end
     objMass(i) = (62e3*(pi*objSize(i).^3).^1.13).*10^-3; %mass i kg
 end
 

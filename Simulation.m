@@ -93,9 +93,9 @@ function [p,activeParticles,activeParticlesMonth,inactiveEarthParticles,inactive
             end
         end
 
-        if(ceil(nSteps/dt)==31536000 && mod(n,(ceil(nSteps/dt)/12))) %check stats every month if we are running a year
+        if(ceil(nSteps*dt)==31536000 && mod(n,nSteps/12)==0) %check stats every month if we are running a year
             collisionCounterMonth = [collisionCounterMonth, collisionCounter]
-            activeParticlesMonth = [activeParticlesMonth, size(activeParticles,2)];
+            activeParticlesMonth = [activeParticlesMonth, size(activeParticles,2)]
         end
         
         %if(nSteps==667 && mod(n,55)==0) %check stats every month if we are running a year
