@@ -1,11 +1,11 @@
 % pos is p(2:3,:); % dimensions of pos (2D)
 % vel is p(5:6,:); % dimensions of vel (2D)
 % acc is p(8:9,:); % dimensions of acc (2D)
-function [p] = Simulation(live_simulation,p,nsteps,dt,r,G,M,simHeight,start_partikel_antal)
-    
-    % Initalize empty tables
-%    [xtable,ytable] = deal(zeros(size(p,2),nSteps));
-
+function [p,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,collisionCounter] = Simulation(live_simulation,p,nSteps,dt,r,G,M,simHeight,start_partikel_antal,plot)
+    if(plot)
+        % Initalize empty tables
+        [xtable,ytable] = deal(zeros(size(p,2),nSteps));
+    end
     collisionCounter = 0;
     collisionPos = [];
     
@@ -15,13 +15,13 @@ function [p] = Simulation(live_simulation,p,nsteps,dt,r,G,M,simHeight,start_part
     t = 0; % Start time
     GM = G*M; % gravitition constant and the earth's mass
 
-    for n=1:1:nsteps
+    for n=1:1:nSteps
         t = t + dt;   % Update the time
         p(17,:) = vecnorm(p(2:3,:)); % Update RH
         
         % Set Particles inactive
         p(15,find(p(17,:)<r)) = 1;
-        p(16,find(p(17,:)>2*10^7)) = 1;
+        p(16,find(p(17,:)>3*10^7)) = 1;
         
         % Select particles who are active or inactive into 3 variables
         activeParticles = find(p(15,:)==0&p(16,:)==0);
@@ -37,6 +37,7 @@ function [p] = Simulation(live_simulation,p,nsteps,dt,r,G,M,simHeight,start_part
         p(14,activeParticles) = p(14,activeParticles)-dt; % To ensure collision detection runs without errors or forever-loops
 
         % Collisions
+        if(mod(n,10))
         for i=1:1:size(p(1,activeParticles),2) % Particle 1
             for j=i+1:1:size(p(1,activeParticles),2) % Particle 2
                 if(i~=j)
@@ -49,10 +50,10 @@ function [p] = Simulation(live_simulation,p,nsteps,dt,r,G,M,simHeight,start_part
                     if(p(15,i)~=1&&p(15,j)~=1&&p(14,i)<=0&&p(14,j)<=0&&(norm(pjiparallel) < norm(vij)*dt) && norm(pjivinkelret) < (p(12,i) + p(12,j))&&(p(2,i)~=p(2,j)&&p(3,i)~=p(3,j)))
                         % MakeCollision between particles
                         [pos_new, vel_new, mass_new, size_new] = MakeCollision(p(2:3,i), p(2:3,j), p(5:6,i), p(5:6,j), p(13,i), p(13,j), p(12,i), p(12,j));
-
-                        %xtable(size(xtable)+1:size(xtable)+10, 1:n) = pos_new(1);
-                        %ytable(size(ytable)+1:size(ytable)+10, 1:n) = pos_new(2);
-
+                        if(plot)
+                            xtable(size(xtable)+1:size(xtable)+10, 1:n) = pos_new(1);
+                            ytable(size(ytable)+1:size(ytable)+10, 1:n) = pos_new(2);
+                        end
                         collisionPos = [collisionPos, pos_new];
                         collisionCounter = collisionCounter+1;
 
@@ -88,28 +89,31 @@ function [p] = Simulation(live_simulation,p,nsteps,dt,r,G,M,simHeight,start_part
         end
 
         % the particle's travel data
-        for i=1:1:size(p,2)
-            if(p(2,i)~=0&&p(3,i)~=0)
-                %xtable(i, n) = p(2,i);
-                %ytable(i, n) = p(3,i);
+        if(plot)
+            for i=1:1:size(p,2)
+                if(p(2,i)~=0&&p(3,i)~=0)
+                    xtable(i, n) = p(2,i);
+                    ytable(i, n) = p(3,i);
+                end
             end
         end
-
-        % Plotting settings
-        figure(1);
-        if(startedSim==1)
-            % live plotting
-            if live_simulation==true && mod(n,5)==0 % Edit this to change plotting speed
-                Plotting(p,r,n, live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,simHeight,start_partikel_antal);
+        if(plot)
+            % Plotting settings
+            figure(1);
+            if(startedSim==1)
+                % live plotting
+                if (plot && live_simulation==true && mod(n,5)==0) % Edit this to change plotting speed
+                    Plotting(xtable,ytable,p,r,n,live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,simHeight,start_partikel_antal);
+                end
+            else
+               title("Press Spacebar To Start Simulation");
+               pause;
+               startedSim = 1;
             end
-        else
-           title("Press Spacebar To Start Simulation");
-           pause;
-           startedSim = 1;
         end
     end
     % not live plotting
-    if(live_simulation==false)
-        Plotting(p,r,n,live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,simHeight,start_partikel_antal);
+    if (plot && live_simulation==false)
+        Plotting(xtable,ytable,p,r,n,live_simulation,t,collisionCounter,collisionPos,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,simHeight,start_partikel_antal);
     end
 end

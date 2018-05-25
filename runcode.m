@@ -3,12 +3,13 @@ clear
 
 % Plotting settings
 live_simulation = false;
+plot = false;
 
 % Simulation settings
-start_partikel_antal = 100; % Particle quantity
-t_end = 172800*7; % Simulation seconds
-dt = 100; % Time-step 
-n = ceil(t_end/dt); % Number of steps simulation has to run
+start_partikel_antal = 1000; % Particle quantity
+t_end = 31536000; % Simulation seconds
+dt = 50; % Time-step 
+nSteps = ceil(t_end/dt); % Number of steps simulation has to run
 
 r = 6.378e6; % Orbits radius from earth
 G = 6.67e-11; % Graviation constant
@@ -24,7 +25,7 @@ position = zeros(3,start_partikel_antal); % Position: x,y,z
 velocity = zeros(3,start_partikel_antal); % velocity: x,y,z
 acceleration = zeros(3,start_partikel_antal); % acceleration x,y,z
 v_0 = zeros(1,start_partikel_antal); % for velocity calculation
-simHeight = [500000;800000];
+simHeight = [200000;300000];
 h = randi([simHeight(1),simHeight(2)],1,start_partikel_antal); % Random height in meters
 objSize = randi([1,15],1,start_partikel_antal); % Random radius size in meters
 angle = deg2rad(randi([1 360],1,start_partikel_antal)); % Random angle from earth
@@ -76,8 +77,8 @@ clear id position acceleration velocity v_0 objSize objMass kineticEnergy collis
 pStart = p;
 
 % Simulation
-[p] = Simulation(live_simulation,p,n,dt,r,G,M,simHeight,start_partikel_antal);
-clear live_simulation n dt r G M simHeight;
+[p,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,collisionCounter] = Simulation(live_simulation,p,nSteps,dt,r,G,M,simHeight,start_partikel_antal,plot);
+clear live_simulation nSteps dt r G M plot;
 
 % Clear variables from workspace
 clear i;
