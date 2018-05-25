@@ -1,11 +1,15 @@
 % pos is p(2:3,:); % dimensions of pos (2D)
 % vel is p(5:6,:); % dimensions of vel (2D)
 % acc is p(8:9,:); % dimensions of acc (2D)
-function [p,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,collisionCounter] = Simulation(live_simulation,p,nSteps,dt,r,G,M,simHeight,start_partikel_antal,plot)
+function [p,activeParticles,activeParticlesMonth,inactiveEarthParticles,inactiveSpaceParticles,collisionCounter,collisionCounterMonth] = Simulation(live_simulation,p,nSteps,dt,r,G,M,simHeight,start_partikel_antal,plot)
     if(plot)
         % Initalize empty tables
         [xtable,ytable] = deal(zeros(size(p,2),nSteps));
     end
+    
+    collisionCounterMonth = [];
+    activeParticlesMonth = [];
+
     collisionCounter = 0;
     collisionPos = [];
     
@@ -37,7 +41,7 @@ function [p,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,collis
         p(14,activeParticles) = p(14,activeParticles)-dt; % To ensure collision detection runs without errors or forever-loops
 
         % Collisions
-        if(mod(n,100)==0)
+        if(mod(n,1000)==0)
             for i=1:1:size(p(1,activeParticles),2) % Particle 1
                 for j=i+1:1:size(p(1,activeParticles),2) % Particle 2
                     if(i~=j)
@@ -89,6 +93,17 @@ function [p,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,collis
             end
         end
 
+        if(ceil(nSteps/dt)==31536000 && mod(n,(ceil(nSteps/dt)/12))) %check stats every month if we are running a year
+            collisionCounterMonth = [collisionCounterMonth, collisionCounter]
+            activeParticlesMonth = [activeParticlesMonth, size(activeParticles,2)];
+        end
+        
+        %if(nSteps==667 && mod(n,55)==0) %check stats every month if we are running a year
+        %    disp("test");
+        %    collisionCounterMonth = [collisionCounterMonth, collisionCounter]
+        %    activeParticlesMonth = [activeParticlesMonth, size(activeParticles,2)]
+        %end
+        
         % the particle's travel data
         if(plot)
             for i=1:1:size(p,2)

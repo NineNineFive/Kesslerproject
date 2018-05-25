@@ -6,9 +6,10 @@ live_simulation = false;
 plot = false;
 
 % Simulation settings
-start_partikel_antal = 1000; % Particle quantity
+start_partikel_antal = 200; % Particle quantity
+%t_end = 10000; 
 t_end = 31536000; % Simulation seconds
-dt = 50; % Time-step 
+dt = 15; % Time-step 
 nSteps = ceil(t_end/dt); % Number of steps simulation has to run
 
 r = 6.378e6; % Orbits radius from earth
@@ -77,8 +78,8 @@ clear id position acceleration velocity v_0 objSize objMass kineticEnergy collis
 pStart = p;
 
 % Simulation
-[p,activeParticles,inactiveEarthParticles,inactiveSpaceParticles,collisionCounter] = Simulation(live_simulation,p,nSteps,dt,r,G,M,simHeight,start_partikel_antal,plot);
-clear live_simulation nSteps dt r G M plot;
+[p,activeParticles,activeParticlesMonth,inactiveEarthParticles,inactiveSpaceParticles,collisionCounter,collisionCounterMonth] = Simulation(live_simulation,p,nSteps,dt,r,G,M,simHeight,start_partikel_antal,plot);
+clear live_simulation dt r G M plot;
 
 % Clear variables from workspace
 clear i;
