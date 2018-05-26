@@ -41,7 +41,7 @@ function [p,activeParticles,activeParticlesMonth,inactiveEarthParticles,inactive
         p(14,activeParticles) = p(14,activeParticles)-dt; % To ensure collision detection runs without errors or forever-loops
 
         % Collisions
-        if(mod(n,1000)==0)
+        if(mod(n,1)==0)
             for i=1:1:size(p(1,activeParticles),2) % Particle 1
                 for j=i+1:1:size(p(1,activeParticles),2) % Particle 2
                     if(i~=j)
@@ -93,16 +93,11 @@ function [p,activeParticles,activeParticlesMonth,inactiveEarthParticles,inactive
             end
         end
 
-        if(ceil(nSteps*dt)==31536000 && mod(n,nSteps/12)==0) %check stats every month if we are running a year
+        if(mod(n,nSteps/12)==0) %check stats every month 
             collisionCounterMonth = [collisionCounterMonth, collisionCounter]
             activeParticlesMonth = [activeParticlesMonth, size(activeParticles,2)]
         end
-        
-        %if(nSteps==667 && mod(n,55)==0) %check stats every month if we are running a year
-        %    disp("test");
-        %    collisionCounterMonth = [collisionCounterMonth, collisionCounter]
-        %    activeParticlesMonth = [activeParticlesMonth, size(activeParticles,2)]
-        %end
+
         
         % the particle's travel data
         if(plot)

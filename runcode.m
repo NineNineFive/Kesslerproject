@@ -3,13 +3,12 @@ clear
 
 % Plotting settings
 live_simulation = false;
-plot = false;
+plot = true;
 
 % Simulation settings
-start_partikel_antal = 200; % Particle quantity
-%t_end = 10000; 
-t_end = 31536000; % Simulation seconds
-dt = 15; % Time-step 
+start_partikel_antal = 50; % Particle quantity
+t_end = 25000; % Simulation seconds
+dt = 5; % Time-step 
 nSteps = ceil(t_end/dt); % Number of steps simulation has to run
 
 r = 6.378e6; % Orbits radius from earth
@@ -26,7 +25,7 @@ position = zeros(3,start_partikel_antal); % Position: x,y,z
 velocity = zeros(3,start_partikel_antal); % velocity: x,y,z
 acceleration = zeros(3,start_partikel_antal); % acceleration x,y,z
 v_0 = zeros(1,start_partikel_antal); % for velocity calculation
-simHeight = [200000;400000];
+simHeight = [800000;810000];
 h = randi([simHeight(1),simHeight(2)],1,start_partikel_antal); % Random height in meters
 objSize = randi([1,15],1,start_partikel_antal); % Random radius size in meters
 angle = deg2rad(randi([1 360],1,start_partikel_antal)); % Random angle from earth
